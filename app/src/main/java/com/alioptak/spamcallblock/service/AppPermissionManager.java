@@ -12,15 +12,16 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class AppPermissionManager extends AppCompatActivity {
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void askPermission(Activity context, String perm, int requestCode){
-        if (checkSelfPermission(perm) != PackageManager.PERMISSION_GRANTED) {
+    public static void askPermission(Activity context, String perm, int requestCode){
+        if (ContextCompat.checkSelfPermission(context, perm) != PackageManager.PERMISSION_GRANTED) {
             final String[] PERMISSIONS_STORAGE = {perm};
-            ActivityCompat.requestPermissions(AppPermissionManager.this, PERMISSIONS_STORAGE, requestCode);
+            ActivityCompat.requestPermissions(context, PERMISSIONS_STORAGE, requestCode);
 
         }
     }
@@ -29,6 +30,7 @@ public class AppPermissionManager extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         boolean permissionGranted = false;
         switch(requestCode){
+            case 8:
             case 9: // 9 : READ_PHONE_STATE
                 permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
                 break;
