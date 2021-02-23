@@ -12,7 +12,6 @@ public class Singleton {
 
     private Singleton() {
          contacts = new ArrayList<Contact>();
-         contacts.add(new Contact(0, "Lucie", "Dolle", "0678787899"));
          blockedNumbers = new ArrayList<String>();
     }
 
@@ -41,6 +40,7 @@ public class Singleton {
     }
 
     public void setContacts(ArrayList<Contact> listContacts){
+        this.contacts = new ArrayList<Contact>();
         // We need to make a deep copy in case it is wrongly modified in the code
         for(Contact c : listContacts){
             this.contacts.add(c);
@@ -105,8 +105,13 @@ public class Singleton {
             if(blocked_number.equalsIgnoreCase(phoneNumber)){
                 status = true;
                 this.blockedNumbers.remove(blocked_number);
+                break;
             }
         }
         return status;
+    }
+
+    public void resetCalls(){
+        this.historic_calls = new ArrayList<Call>();
     }
 }

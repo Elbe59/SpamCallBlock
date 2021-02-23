@@ -23,7 +23,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:text="Contacts"
-                android:gravity="center"
+                android:gravity="center|left"
                 android:fontWeight="700"
                 android:textSize="22dp"
                 android:textColor="#124EDF"

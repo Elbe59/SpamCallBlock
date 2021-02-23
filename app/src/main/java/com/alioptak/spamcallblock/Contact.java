@@ -2,39 +2,20 @@ package com.alioptak.spamcallblock;
 
 public class Contact {
     private int id;
-    private String firstname;
-    private String lastname;
+    private String name;
     private String phone_number;
 
-    public Contact( int id, String firstname,String lastname,String phone_number) {
-        this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public Contact(String name,String phone_number) {
+        this.name = name;
         this.phone_number = phone_number;
     }
 
-    public int getId() {
-        return id;
+    public String getName() {
+        return name;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getFirstname() {
-        return firstname;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone_number() {

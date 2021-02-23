@@ -33,6 +33,7 @@ public class HistoricActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historic);
+
         getCallDetails(this);
 
         recyclerview_historic_calls = findViewById(R.id.recyclerview_historic_calls);
@@ -50,6 +51,8 @@ public class HistoricActivity extends AppCompatActivity {
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
         int date = cursor.getColumnIndex(CallLog.Calls.DATE);
+        // VOUS AVEZ OUBLIÉ DE RESET LA LISTE DES CALLS!
+        Singleton.getInstance().resetCalls();
         while (cursor.moveToNext()) {
 
             String phNumber = cursor.getString(number);
@@ -70,7 +73,7 @@ public class HistoricActivity extends AppCompatActivity {
         @Override
         public HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // we specify the context for our viewHolder
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View view = inflater.inflate(R.layout.cell_contact, parent, false);
+            View view = inflater.inflate(R.layout.cell_call, parent, false);
             return new HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder(view);
         }
 
@@ -103,12 +106,12 @@ public class HistoricActivity extends AppCompatActivity {
                 String text = call.getPhNumber();
                 for (Contact c : contacts) {
                     if (c.getPhone_number() == call.getPhNumber()) {
-                        text = c.getFirstname() + " " + c.getLastname();
+                        text = c.getName();
                         break;
                     }
                 }
 
-                //textview_cellcall_date.setText(call.getDate());
+                textview_cellcall_date.setText(call.getDate());
                 textview_cellcall_phnumber.setText(text);
 
                 this.itemView.setBackgroundColor(lineColor); // We change the background
@@ -137,6 +140,7 @@ public class HistoricActivity extends AppCompatActivity {
                             button_cellcall_block.setText("unblock");
                             Log.d(TAG, "Block Contact: " + call.getPhNumber());
                         }
+                        MyHistoricAdapter.this.notifyDataSetChanged();
                     }
                 });
             }
