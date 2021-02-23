@@ -12,6 +12,7 @@ public class Singleton {
 
     private Singleton() {
          contacts = new ArrayList<Contact>();
+         contacts.add(new Contact(0, "Lucie", "Dolle", "0678787899"));
          blockedContacts = new ArrayList<Contact>();
     }
 
@@ -61,7 +62,7 @@ public class Singleton {
         return this.blockedContacts.size();
     }
 
-    // we just need to substract.
+    // we just need to subtract.
     public Integer getNumberNotBlocked(){
         return this.getNumberContacts() - this.getNumberBlocked();
     }
