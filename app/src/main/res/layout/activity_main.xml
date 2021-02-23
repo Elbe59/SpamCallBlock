@@ -8,11 +8,11 @@
     <LinearLayout
         android:id="@+id/linear_main_title"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="match_parent"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="70dp"
             android:orientation="horizontal">
             <TextView
                 android:layout_width="match_parent"
@@ -32,20 +32,41 @@
         <ListView
             android:id="@+id/list_view_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/button_main_gocontact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30dp"
+                android:text="Contacts"
+                android:layout_weight="1"/>
+            <Button
+                android:id="@+id/button_main_gohistoric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Historic"
+                android:textSize="30dp"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="Activate"
-            android:textSize="30dp"/>
-        <Button
-            android:id="@+id/button_main_activateapp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:src="@mipmap/ic_launcher"/>
-        </Button>
+            android:textSize="30dp"
+            android:layout_marginBottom="20dp"/>
+        <ImageView
+            android:clickable="true"
+            android:onClick="imageClick"
+            android:src="@drawable/ic_launcher_background"
+            android:layout_height="300dp"
+            android:layout_width="300dp"
+            android:layout_gravity="center"/>
 
     </LinearLayout>
 
