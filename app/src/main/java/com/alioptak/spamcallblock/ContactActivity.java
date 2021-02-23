@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +22,7 @@ public class ContactActivity extends AppCompatActivity {
     RecyclerView recyclerview_contacts_list;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager layoutManager;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,60 +35,67 @@ public class ContactActivity extends AppCompatActivity {
         recyclerview_contacts_list.setLayoutManager(layoutManager);
 
         // We instantiate and bind our Adapter
-        mAdapter = new MyAdapter();
+        mAdapter = new MyContactAdapter();
         recyclerview_contacts_list.setAdapter(mAdapter);
     }
 
-    public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder>{
+    public class MyContactAdapter extends RecyclerView.Adapter<MyContactAdapter.MyContactViewHolder>{
 
         @NonNull
         @Override
-        public MyAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // we specify the contexte for our viewHolder
+        public MyContactAdapter.MyContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // we specify the context for our viewHolder
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.cell_contact, parent, false);
-            return new MyViewHolder(view);
+            return new MyContactViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyAdapter.MyViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull MyContactAdapter.MyContactViewHolder holder, int position) {
             holder.setContact(Singleton.getInstance().getContactAtPosition(position), Color.WHITE);
         }
 
         @Override
         public int getItemCount() {
-            return Singleton.getInstance().getNumberContacts();
+            return Singleton.getInstance().getNumberContacts(); // We get the number of contacts from the singleton
         }
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
+        public class MyContactViewHolder extends RecyclerView.ViewHolder { // Things to display in the item
 
             TextView textview_cell_contact_name;
-            Button button_cell_contact_block;
 
-            public MyViewHolder(@NonNull View itemView) {
+            public MyContactViewHolder(@NonNull View itemView) {
                 super(itemView);
                 textview_cell_contact_name = (TextView) itemView.findViewById(R.id.textview_cell_contact_name);
-                button_cell_contact_block = (Button) itemView.findViewById(R.id.button_cell_contact_block);
             }
 
-            public void setContact(final Contact c, int lineColor) {
-                this.itemView.setBackgroundColor(lineColor);
+            @SuppressLint("ResourceAsColor")
+            public void setContact(final Contact contact, int lineColor) {
+                this.itemView.setBackgroundColor(lineColor); // We change the background
+                Button button_cell_contact_block;
+                button_cell_contact_block = (Button) itemView.findViewById(R.id.button_cell_contact_block);
+                if (contact.isBlock()) {
+                    button_cell_contact_block.setBackgroundColor(R.color.red_block);
+                } else {
+                    button_cell_contact_block.setBackgroundColor(R.color.blue_project);
+                }
 
-                Button button = this.itemView.findViewById(R.id.button_cell_contact_block);
-                boolean is_blocked = Singleton.getInstance().isBlocked(c);
-                button.setText(is_blocked ? "unblock" : "Block");
-                button.setBackgroundColor(is_blocked ? 0xFF0000 : 0x00AA00);
-
-                button.setOnClickListener(new View.OnClickListener() {
+                button_cell_contact_block.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.d(TAG, "Block toggle on");
+                        if (contact.isBlock()) {
+                            Singleton.getInstance().unblock(contact);
+                            button_cell_contact_block.setBackgroundColor(R.color.blue_project);
+                            Log.d(TAG, "UnBlock Contact: " + contact.getPhone_number());
+                        } else {
+                            Singleton.getInstance().block(contact);
+                            button_cell_contact_block.setBackgroundColor(R.color.red_block);
+                            Log.d(TAG, "Block Contact: " + contact.getPhone_number());
+                        }
                     }
                 });
 
-                textview_cell_contact_name.setText((c.getFirstname().length() == 0 && c.getLastname().length() == 0) ? c.getPhone_number() : c.getFirstname() + " " + c.getLastname());
+                textview_cell_contact_name.setText(contact.getPhone_number());
             }
-
         }
     }
-
 }
