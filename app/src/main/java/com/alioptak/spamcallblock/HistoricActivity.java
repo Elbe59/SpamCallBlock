@@ -44,6 +44,7 @@ public class HistoricActivity extends AppCompatActivity {
         // We instantiate and bind our Adapter
         mAdapter = new HistoricActivity.MyHistoricAdapter();
         recyclerview_historic_calls.setAdapter(mAdapter);
+
     }
     private static void getCallDetails(Context context) {
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
@@ -55,7 +56,7 @@ public class HistoricActivity extends AppCompatActivity {
             String callDate = cursor.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
             /** A VOIR **/
-            String date_string = callDayTime.getDate()+"/"+callDayTime.getMonth();
+            String date_string = "21/02";
             /************/
             Call call = new Call(phNumber,date_string);
             Singleton.getInstance().addCall(call);
@@ -107,7 +108,7 @@ public class HistoricActivity extends AppCompatActivity {
                     }
                 }
 
-                textview_cellcall_date.setText(call.getDate());
+                //textview_cellcall_date.setText(call.getDate());
                 textview_cellcall_phnumber.setText(text);
 
                 this.itemView.setBackgroundColor(lineColor); // We change the background

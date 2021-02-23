@@ -1,24 +1,17 @@
 package com.alioptak.spamcallblock;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-
-import com.alioptak.spamcallblock.service.AppPermissionManager;
 
 public class MainActivity extends AppCompatActivity {
 
     Button button_main_gocontact;
     Button button_main_gohistoric;
-    ImageView imgeview_main_activate;
-    @RequiresApi(api = Build.VERSION_CODES.M)
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
         /** PERMISSIONS **/
         AppPermissionManager apm = new AppPermissionManager();
         apm.askPermission(MainActivity.this, Manifest.permission.READ_PHONE_STATE, 9);
+    }
+
+    public void checkPermissionOnClick(){
+        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this,Manifest.permission.READ_CALL_LOG)) {
+
+            final String[] PERMISSIONS_STORAGE = {permission.READ_CALL_LOG};
+            //Asking request Permissions
+            ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, 9);
+
+        }
     }
 
     public void goToContact(){
