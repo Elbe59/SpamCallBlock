@@ -44,4 +44,25 @@ public class Singleton {
             this.contacts.add(c);
         }
     }
+
+    public Contact getContactAtPosition(int position){
+        return this.contacts.get(position);
+    }
+
+    public Boolean isBlocked(Contact c){
+        return this.blockedContacts.indexOf(c) != -1;
+    }
+
+    public Integer getNumberContacts(){
+        return this.contacts.size();
+    }
+
+    public Integer getNumberBlocked(){
+        return this.blockedContacts.size();
+    }
+
+    public Integer getNumberNotBlocked(){
+        return this.getNumberContacts() - this.getNumberBlocked();
+    }
+
 }
