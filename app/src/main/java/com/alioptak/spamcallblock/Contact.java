@@ -7,10 +7,10 @@ public class Contact {
     private String phone_number;
 
     public Contact( int id, String firstname,String lastname,String phone_number) {
-    this.id = id;
-    this.firstname = firstname;
-    this.lastname = lastname;
-    this.phone_number = phone_number;
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.phone_number = phone_number;
     }
 
     public int getId() {

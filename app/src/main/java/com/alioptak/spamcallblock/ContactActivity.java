@@ -51,7 +51,7 @@ public class ContactActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyContactAdapter.MyContactViewHolder holder, int position) {
-            holder.setContact(Singleton.getInstance().getContactAtPosition(position), Color.WHITE);
+            holder.setContact(Singleton.getInstance().getContactAtPosition(position), Color.LTGRAY);
         }
 
         @Override
