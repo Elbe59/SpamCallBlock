@@ -76,7 +76,6 @@ public class HistoricActivity extends AppCompatActivity {
             public void setHistoric(final Call call, int lineColor) {
 
                 ArrayList<Contact> contacts = Singleton.getInstance().getListContact();
-                //Contact contact = new Contact(call.getPhNumber());
 
                 String text = call.getPhNumber();
                 for (Contact c : contacts) {
@@ -89,13 +88,11 @@ public class HistoricActivity extends AppCompatActivity {
                 textview_cellcall_date.setText(call.getDate());
                 textview_cellcall_phnumber.setText(text);
 
-
-
                 this.itemView.setBackgroundColor(lineColor); // We change the background
                 Button button_cellcall_block;
                 button_cellcall_block = (Button) itemView.findViewById(R.id.button_cellcall_block);
 
-                if (Singleton.getInstance().isBlocked(contact)) {
+                if (Singleton.getInstance().isBlocked(call.getPhNumber())) {
                     button_cellcall_block.setBackgroundColor(R.color.red_block);
                     button_cellcall_block.setText("unblock");
                 } else {
@@ -106,16 +103,16 @@ public class HistoricActivity extends AppCompatActivity {
                 button_cellcall_block.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (Singleton.getInstance().isBlocked(contact)) {
-                            Singleton.getInstance().unblock(contact);
+                        if (Singleton.getInstance().isBlocked(call.getPhNumber())) {
+                            Singleton.getInstance().unblock(call.getPhNumber());
                             button_cellcall_block.setBackgroundColor(R.color.blue_project);
                             button_cellcall_block.setText("block");
-                            Log.d(TAG, "UnBlock Contact: " + contact.getPhone_number());
+                            Log.d(TAG, "UnBlock Contact: " + call.getPhNumber());
                         } else {
-                            Singleton.getInstance().block(contact);
+                            Singleton.getInstance().block(call.getPhNumber());
                             button_cellcall_block.setBackgroundColor(R.color.red_block);
                             button_cellcall_block.setText("unblock");
-                            Log.d(TAG, "Block Contact: " + contact.getPhone_number());
+                            Log.d(TAG, "Block Contact: " + call.getPhNumber());
                         }
                     }
                 });

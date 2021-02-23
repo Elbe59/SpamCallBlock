@@ -86,4 +86,27 @@ public class Singleton {
     public Call getCallAtPosition(int position){
         return historic_calls.get(position);
     }
+
+    public Boolean isBlocked(String phoneNumber){
+        return this.blockedNumbers.indexOf(phoneNumber) != -1;
+    }
+
+    public void block(String phoneNumber){
+        blockedNumbers.add(phoneNumber);
+    }
+
+    /**
+     * @param  phoneNumber : The contact you want to unblock
+     * @return status  : false if the contact is not found
+     */
+    public Boolean unblock(String phoneNumber){
+        boolean status = false;
+        for(String blocked_number : blockedNumbers){
+            if(blocked_number.equalsIgnoreCase(phoneNumber)){
+                status = true;
+                this.blockedNumbers.remove(blocked_number);
+            }
+        }
+        return status;
+    }
 }
