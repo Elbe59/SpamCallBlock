@@ -61,6 +61,7 @@ public class Singleton {
         return this.blockedContacts.size();
     }
 
+    // we just need to substract.
     public Integer getNumberNotBlocked(){
         return this.getNumberContacts() - this.getNumberBlocked();
     }
