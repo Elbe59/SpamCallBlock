@@ -32,8 +32,8 @@
                 />
 
             <Button
-                android:layout_width="0dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:text="Sort"
                 android:layout_weight="1"
                 />

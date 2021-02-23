@@ -42,7 +42,6 @@ public class Singleton {
 
     public void setContacts(ArrayList<Contact> listContacts){
         // We need to make a deep copy in case it is wrongly modified in the code
-        this.contacts = new ArrayList<Contact>();
         for(Contact c : listContacts){
             this.contacts.add(c);
         }

@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class HistoricActivity extends AppCompatActivity {
 
@@ -29,6 +33,7 @@ public class HistoricActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_historic);
+        getCallDetails(this);
 
         recyclerview_historic_calls = findViewById(R.id.recyclerview_historic_calls);
 
@@ -39,6 +44,23 @@ public class HistoricActivity extends AppCompatActivity {
         // We instantiate and bind our Adapter
         mAdapter = new HistoricActivity.MyHistoricAdapter();
         recyclerview_historic_calls.setAdapter(mAdapter);
+    }
+    private static void getCallDetails(Context context) {
+        Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
+        int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+        int date = cursor.getColumnIndex(CallLog.Calls.DATE);
+        while (cursor.moveToNext()) {
+
+            String phNumber = cursor.getString(number);
+            String callDate = cursor.getString(date);
+            Date callDayTime = new Date(Long.valueOf(callDate));
+            /** A VOIR **/
+            String date_string = callDayTime.getDate()+"/"+callDayTime.getMonth();
+            /************/
+            Call call = new Call(phNumber,date_string);
+            Singleton.getInstance().addCall(call);
+        }
+        cursor.close();
     }
 
     public class MyHistoricAdapter extends RecyclerView.Adapter<HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder>{
