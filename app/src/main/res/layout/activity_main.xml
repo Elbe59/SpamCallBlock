@@ -71,6 +71,7 @@
             android:layout_marginBottom="20dp"/>
         <ImageView
             android:clickable="true"
+            android:id="@+id/imgeview_main_activate"
             android:onClick="imageClick"
             android:src="@drawable/ic_launcher_background"
             android:layout_height="300dp"
