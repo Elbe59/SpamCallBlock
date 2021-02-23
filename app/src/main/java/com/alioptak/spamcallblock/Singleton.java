@@ -18,7 +18,7 @@ public class Singleton {
 
     private ArrayList<Contact> contacts;
     private ArrayList<String> blockedNumbers;
-    private ArrayList<Call> historic_calls;
+    private ArrayList<Call> historic_calls= new ArrayList<>();
 
     /** CONTACTS **/
     public void block(Contact c){
@@ -76,6 +76,7 @@ public class Singleton {
     /** CALLS **/
     public void addCall (Call call) {
         historic_calls.add(call);
+        System.out.println("Ajout "+ call.getPhNumber() + " " + call.getDate());
     }
 
     public int getNumberOfCall () {
