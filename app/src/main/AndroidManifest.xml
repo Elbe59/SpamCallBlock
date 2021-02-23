@@ -13,8 +13,9 @@
         android:theme="@style/Theme.SpamCallBlock">
         <receiver android:name=".service.PhoneStateBroadcastReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.PHONE_STATE">
-                </action></intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                </intent-filter>
         </receiver>
         <activity android:name=".HistoricActivity"/>
         <activity android:name=".ContactActivity" />

@@ -25,7 +25,7 @@ public class Singleton {
     }
 
     /**
-     * @param  contact : The contact you want to unblock
+     * @param contact : The contact you want to unblock
      * @return status  : false if the contact is not found
      */
     public Boolean unblock(Contact contact){
