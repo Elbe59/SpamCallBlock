@@ -5,14 +5,12 @@ public class Contact {
     private String firstname;
     private String lastname;
     private String phone_number;
-    private boolean isBlock;
 
-    public Contact( int id, String firstname,String lastname,String phone_number, boolean isBlock) {
+    public Contact( int id, String firstname,String lastname,String phone_number) {
     this.id = id;
     this.firstname = firstname;
     this.lastname = lastname;
     this.phone_number = phone_number;
-    this.isBlock = isBlock;
     }
 
     public int getId() {
@@ -45,13 +43,5 @@ public class Contact {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
-    }
-
-    public boolean isBlock() {
-        return isBlock;
-    }
-
-    public void setBlock(boolean block) {
-        isBlock = block;
     }
 }

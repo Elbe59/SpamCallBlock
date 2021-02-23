@@ -73,28 +73,37 @@ public class ContactActivity extends AppCompatActivity {
                 this.itemView.setBackgroundColor(lineColor); // We change the background
                 Button button_cell_contact_block;
                 button_cell_contact_block = (Button) itemView.findViewById(R.id.button_cell_contact_block);
-                if (contact.isBlock()) {
+
+                if (Singleton.getInstance().isBlocked(contact)) {
                     button_cell_contact_block.setBackgroundColor(R.color.red_block);
+                    button_cell_contact_block.setText("unblock");
                 } else {
                     button_cell_contact_block.setBackgroundColor(R.color.blue_project);
+                    button_cell_contact_block.setText("block");
                 }
 
                 button_cell_contact_block.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (contact.isBlock()) {
+                        if (Singleton.getInstance().isBlocked(contact)) {
                             Singleton.getInstance().unblock(contact);
                             button_cell_contact_block.setBackgroundColor(R.color.blue_project);
+                            button_cell_contact_block.setText("block");
                             Log.d(TAG, "UnBlock Contact: " + contact.getPhone_number());
                         } else {
                             Singleton.getInstance().block(contact);
                             button_cell_contact_block.setBackgroundColor(R.color.red_block);
+                            button_cell_contact_block.setText("unblock");
                             Log.d(TAG, "Block Contact: " + contact.getPhone_number());
                         }
                     }
                 });
 
-                textview_cell_contact_name.setText(contact.getPhone_number());
+                String text = contact.getFirstname() + " " + contact.getLastname();
+                if(contact.getFirstname().length() == 0 && contact.getLastname().length() == 0){
+                    text = contact.getPhone_number();
+                }
+                textview_cell_contact_name.setText(text);
             }
         }
     }
