@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 checkPermissionOnClick();
+                goToHistoric();
             }
         });
         button_main_gocontact = findViewById(R.id.button_main_gocontact);

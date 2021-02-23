@@ -70,7 +70,7 @@ public class HistoricActivity extends AppCompatActivity {
         @Override
         public HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // we specify the context for our viewHolder
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-            View view = inflater.inflate(R.layout.cell_contact, parent, false);
+            View view = inflater.inflate(R.layout.cell_call, parent, false);
             return new HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder(view);
         }
 
@@ -108,7 +108,7 @@ public class HistoricActivity extends AppCompatActivity {
                     }
                 }
 
-                //textview_cellcall_date.setText(call.getDate());
+                textview_cellcall_date.setText(call.getDate());
                 textview_cellcall_phnumber.setText(text);
 
                 this.itemView.setBackgroundColor(lineColor); // We change the background
