@@ -13,14 +13,16 @@ public class Singleton {
     private Singleton() {
          contacts = new ArrayList<Contact>();
          contacts.add(new Contact(0, "Lucie", "Dolle", "0678787899"));
-         blockedContacts = new ArrayList<Contact>();
+         blockedNumbers = new ArrayList<String>();
     }
 
     private ArrayList<Contact> contacts;
-    private ArrayList<Contact> blockedContacts;
+    private ArrayList<String> blockedNumbers;
+    private ArrayList<Call> historic_calls;
 
+    /** CONTACTS **/
     public void block(Contact c){
-        blockedContacts.add(c);
+        blockedNumbers.add(c.getPhone_number());
     }
 
     /**
@@ -29,10 +31,10 @@ public class Singleton {
      */
     public Boolean unblock(Contact contact){
         boolean status = false;
-        for(Contact blocked_contact : blockedContacts){
-            if(blocked_contact.getPhone_number().equalsIgnoreCase(contact.getPhone_number())){
+        for(String blocked_number : blockedNumbers){
+            if(blocked_number.equalsIgnoreCase(contact.getPhone_number())){
                 status = true;
-                this.blockedContacts.remove(blocked_contact);
+                this.blockedNumbers.remove(blocked_number);
             }
         }
         return status;
@@ -46,12 +48,16 @@ public class Singleton {
         }
     }
 
+    public ArrayList<Contact> getListContact () {
+        return this.contacts;
+    }
+
     public Contact getContactAtPosition(int position){
         return this.contacts.get(position);
     }
 
     public Boolean isBlocked(Contact c){
-        return this.blockedContacts.indexOf(c) != -1;
+        return this.blockedNumbers.indexOf(c.getPhone_number()) != -1;
     }
 
     public Integer getNumberContacts(){
@@ -59,7 +65,7 @@ public class Singleton {
     }
 
     public Integer getNumberBlocked(){
-        return this.blockedContacts.size();
+        return this.blockedNumbers.size();
     }
 
     // we just need to subtract.
@@ -67,4 +73,17 @@ public class Singleton {
         return this.getNumberContacts() - this.getNumberBlocked();
     }
 
+
+    /** CALLS **/
+    public void addCall (Call call) {
+        historic_calls.add(call);
+    }
+
+    public int getNumberOfCall () {
+        return historic_calls.size();
+    }
+
+    public Call getCallAtPosition(int position){
+        return historic_calls.get(position);
+    }
 }

@@ -6,25 +6,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="100dp"
         android:orientation="horizontal"
         android:layout_marginTop="30dp"
         tools:ignore="MissingConstraints">
         <TextView
+            android:id="@+id/textview_cellcall_date"
             android:layout_width="80dp"
             android:text="hh:mm"
             android:layout_height="match_parent">
         </TextView>
         <TextView
+            android:id="@+id/textview_cellcall_phnumber"
             android:layout_width="150dp"
             android:text="0X XX XX XX XX"
             android:layout_height="match_parent">
         </TextView>
-        <TextView
+        <Button
+            android:id="@+id/button_cellcall_block"
             android:layout_width="match_parent"
             android:text="Bloqué"
             android:layout_height="match_parent">
-        </TextView>
+        </Button>
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
