@@ -88,7 +88,7 @@ public class ContactActivity extends AppCompatActivity {
                     }
                 }
 
-                if(phone.length() > 0){
+                if(phone != null && phone.length() > 0){
                     Log.d(TAG, phone + " " + name);
                     Contact contact = new Contact(name, phone);
                     contacts.add(contact);

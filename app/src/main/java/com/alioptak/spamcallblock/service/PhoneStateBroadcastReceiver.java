@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
 
@@ -22,6 +23,8 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
                 String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                 if(phoneNumber != null && phoneNumber.length() != 0){
                     Log.d(TAG, "Incoming call: " + phoneNumber);
+                    Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
+
                     // We can plug a method here. We'll be able to check whether or not this number needs to be blocked
                 }
             }
