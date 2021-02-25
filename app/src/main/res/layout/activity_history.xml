@@ -36,13 +36,13 @@
                 android:layout_height="40dp"
                 android:backgroundTint="@color/blue_project"
                 android:text="Sort"
-                android:id="@+id/button_historic_sort"
+                android:id="@+id/button_history_sort"
                 />
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_historic_calls"
+            android:id="@+id/recyclerview_history_calls"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="9"

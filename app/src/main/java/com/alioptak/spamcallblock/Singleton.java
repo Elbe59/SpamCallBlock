@@ -17,7 +17,7 @@ public class Singleton {
 
     private ArrayList<Contact> contacts;
     private ArrayList<String> blockedNumbers;
-    private ArrayList<Call> historic_calls= new ArrayList<>();
+    private ArrayList<Call> history_calls= new ArrayList<>();
 
     /** CONTACTS **/
     public void block(Contact c){
@@ -75,16 +75,16 @@ public class Singleton {
 
     /** CALLS **/
     public void addCall (Call call) {
-        historic_calls.add(call);
+        history_calls.add(call);
         System.out.println("Ajout "+ call.getPhNumber() + " " + call.getDate());
     }
 
     public int getNumberOfCall () {
-        return historic_calls.size();
+        return history_calls.size();
     }
 
     public Call getCallAtPosition(int position){
-        return historic_calls.get(position);
+        return history_calls.get(position);
     }
 
     public Boolean isBlocked(String phoneNumber){
@@ -112,6 +112,6 @@ public class Singleton {
     }
 
     public void resetCalls(){
-        this.historic_calls = new ArrayList<Call>();
+        this.history_calls = new ArrayList<Call>();
     }
 }

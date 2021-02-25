@@ -20,7 +20,7 @@ import com.alioptak.spamcallblock.service.PhoneStateBroadcastReceiver;
 public class MainActivity extends AppCompatActivity {
 
     Button button_main_gocontact;
-    Button button_main_gohistoric;
+    Button button_main_gohistory;
     ImageView imgeview_main_activate;
     String TAG = "MainActivity";
 
@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button_main_gohistoric = findViewById(R.id.button_main_gohistoric);
-        button_main_gohistoric.setOnClickListener(new View.OnClickListener(){
+        button_main_gohistory = findViewById(R.id.button_main_gohistory);
+        button_main_gohistory.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 askPermission( permission.READ_CALL_LOG, 8);
@@ -60,8 +60,8 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    public void goToHistoric(){
-        Intent i = new Intent(MainActivity.this, HistoricActivity.class);
+    public void goToHistory(){
+        Intent i = new Intent(MainActivity.this, HistoryActivity.class);
         startActivity(i);
     }
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     goToContact();
                     break;
                 case 8:
-                    goToHistoric();
+                    goToHistory();
                     break;
                 case 9:
                     break;
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 8:
                 permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
-                if(permissionGranted) goToHistoric();
+                if(permissionGranted) goToHistory();
                 break;
             case 9:
                 permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
@@ -104,13 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 permissionGranted = false;
         }
         if(permissionGranted){
-            goToHistoric();
+            goToHistory();
         }else {
             Toast.makeText(this, "You don't assign permission.", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-
 }

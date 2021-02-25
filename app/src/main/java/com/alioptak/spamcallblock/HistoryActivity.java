@@ -21,30 +21,30 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class HistoricActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity {
 
-    private String TAG = "historic_activity";
+    private String TAG = "history_activity";
 
-    RecyclerView recyclerview_historic_calls;
+    RecyclerView recyclerview_history_calls;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_historic);
+        setContentView(R.layout.activity_history);
 
         getCallDetails(this);
 
-        recyclerview_historic_calls = findViewById(R.id.recyclerview_historic_calls);
+        recyclerview_history_calls = findViewById(R.id.recyclerview_history_calls);
 
         // We define and set our LayoutManager : Linear vertical (implicit)
         layoutManager = new LinearLayoutManager(this);
-        recyclerview_historic_calls.setLayoutManager(layoutManager);
+        recyclerview_history_calls.setLayoutManager(layoutManager);
 
         // We instantiate and bind our Adapter
-        mAdapter = new HistoricActivity.MyHistoricAdapter();
-        recyclerview_historic_calls.setAdapter(mAdapter);
+        mAdapter = new HistoryActivity.MyHistoryAdapter();
+        recyclerview_history_calls.setAdapter(mAdapter);
 
     }
     private static void getCallDetails(Context context) {
@@ -67,19 +67,19 @@ public class HistoricActivity extends AppCompatActivity {
         cursor.close();
     }
 
-    public class MyHistoricAdapter extends RecyclerView.Adapter<HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder>{
+    public class MyHistoryAdapter extends RecyclerView.Adapter<HistoryActivity.MyHistoryAdapter.MyHistoryViewHolder>{
 
         @NonNull
         @Override
-        public HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // we specify the context for our viewHolder
+        public HistoryActivity.MyHistoryAdapter.MyHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) { // we specify the context for our viewHolder
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View view = inflater.inflate(R.layout.cell_call, parent, false);
-            return new HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder(view);
+            return new HistoryActivity.MyHistoryAdapter.MyHistoryViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull HistoricActivity.MyHistoricAdapter.MyHistoricViewHolder holder, int position) {
-            holder.setHistoric(Singleton.getInstance().getCallAtPosition(position), Color.WHITE);
+        public void onBindViewHolder(@NonNull HistoryActivity.MyHistoryAdapter.MyHistoryViewHolder holder, int position) {
+            holder.setHistory(Singleton.getInstance().getCallAtPosition(position), Color.WHITE);
         }
 
         @Override
@@ -87,19 +87,19 @@ public class HistoricActivity extends AppCompatActivity {
             return Singleton.getInstance().getNumberOfCall();
         }
 
-        public class MyHistoricViewHolder extends RecyclerView.ViewHolder {
+        public class MyHistoryViewHolder extends RecyclerView.ViewHolder {
 
             TextView textview_cellcall_date;
             TextView textview_cellcall_phnumber;
 
-            public MyHistoricViewHolder(@NonNull View itemView) {
+            public MyHistoryViewHolder(@NonNull View itemView) {
                 super(itemView);
                 textview_cellcall_date = (TextView) itemView.findViewById(R.id.textview_cellcall_date);
                 textview_cellcall_phnumber = (TextView) itemView.findViewById(R.id.textview_cellcall_phnumber);
             }
 
             @SuppressLint("ResourceAsColor")
-            public void setHistoric(final Call call, int lineColor) {
+            public void setHistory(final Call call, int lineColor) {
 
                 ArrayList<Contact> contacts = Singleton.getInstance().getListContact();
 
@@ -140,7 +140,7 @@ public class HistoricActivity extends AppCompatActivity {
                             button_cellcall_block.setText("unblock");
                             Log.d(TAG, "Block Contact: " + call.getPhNumber());
                         }
-                        MyHistoricAdapter.this.notifyDataSetChanged();
+                        MyHistoryAdapter.this.notifyDataSetChanged();
                     }
                 });
             }
