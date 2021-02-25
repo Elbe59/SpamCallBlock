@@ -62,7 +62,7 @@ public class HistoryActivity extends AppCompatActivity {
             String phNumber = cursor.getString(number);
             String callDate = cursor.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
-            formater = new SimpleDateFormat("dd/MM");
+            formater = new SimpleDateFormat("dd/MM/yy");
             String date_string = formater.format(callDayTime);
             Call call = new Call(phNumber,date_string);
             Singleton.getInstance().addCall(call);
