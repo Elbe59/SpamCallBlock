@@ -17,7 +17,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 </intent-filter>
         </receiver>
-        <activity android:name=".HistoricActivity"/>
+        <activity android:name=".HistoryActivity"/>
         <activity android:name=".ContactActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
