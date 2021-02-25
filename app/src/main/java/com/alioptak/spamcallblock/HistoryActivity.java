@@ -18,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -48,6 +51,7 @@ public class HistoryActivity extends AppCompatActivity {
 
     }
     private static void getCallDetails(Context context) {
+        SimpleDateFormat formater = null;
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
         int date = cursor.getColumnIndex(CallLog.Calls.DATE);
@@ -58,9 +62,8 @@ public class HistoryActivity extends AppCompatActivity {
             String phNumber = cursor.getString(number);
             String callDate = cursor.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
-            /** A VOIR **/
-            String date_string = "21/02";
-            /************/
+            formater = new SimpleDateFormat("dd/MM");
+            String date_string = formater.format(callDayTime);
             Call call = new Call(phNumber,date_string);
             Singleton.getInstance().addCall(call);
         }
