@@ -113,7 +113,7 @@ public class ContactActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyContactAdapter.MyContactViewHolder holder, int position) {
-            holder.setContact(Singleton.getInstance().getContactAtPosition(position), Color.LTGRAY);
+            holder.setContact(Singleton.getInstance().getContactAtPosition(position));
         }
 
         @Override
@@ -131,8 +131,7 @@ public class ContactActivity extends AppCompatActivity {
             }
 
             @SuppressLint("ResourceAsColor")
-            public void setContact(final Contact contact, int lineColor) {
-                this.itemView.setBackgroundColor(lineColor); // We change the background
+            public void setContact(final Contact contact) {
                 Button button_cell_contact_block;
                 button_cell_contact_block = (Button) itemView.findViewById(R.id.button_cell_contact_block);
 

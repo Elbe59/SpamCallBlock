@@ -79,7 +79,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull HistoryActivity.MyHistoryAdapter.MyHistoryViewHolder holder, int position) {
-            holder.setHistory(Singleton.getInstance().getCallAtPosition(position), Color.WHITE);
+            holder.setHistory(Singleton.getInstance().getCallAtPosition(position));
         }
 
         @Override
@@ -99,7 +99,7 @@ public class HistoryActivity extends AppCompatActivity {
             }
 
             @SuppressLint("ResourceAsColor")
-            public void setHistory(final Call call, int lineColor) {
+            public void setHistory(final Call call) {
 
                 ArrayList<Contact> contacts = Singleton.getInstance().getListContact();
 
@@ -114,7 +114,6 @@ public class HistoryActivity extends AppCompatActivity {
                 textview_cellcall_date.setText(call.getDate());
                 textview_cellcall_phnumber.setText(text);
 
-                this.itemView.setBackgroundColor(lineColor); // We change the background
                 Button button_cellcall_block;
                 button_cellcall_block = (Button) itemView.findViewById(R.id.button_cellcall_block);
 
