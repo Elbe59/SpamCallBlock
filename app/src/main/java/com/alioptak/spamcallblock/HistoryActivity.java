@@ -58,8 +58,12 @@ public class HistoryActivity extends AppCompatActivity {
         // VOUS AVEZ OUBLIÉ DE RESET LA LISTE DES CALLS!
         Singleton.getInstance().resetCalls();
         while (cursor.moveToNext()) {
-
             String phNumber = cursor.getString(number);
+            if(phNumber.length()>2){
+                if(!phNumber.substring(0,3).contentEquals("+33") && phNumber.length()==10){
+                    phNumber = "+33" + phNumber.substring(1);
+                }
+            }
             String callDate = cursor.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
             formater = new SimpleDateFormat("dd/MM/yy");
@@ -103,12 +107,16 @@ public class HistoryActivity extends AppCompatActivity {
 
             @SuppressLint("ResourceAsColor")
             public void setHistory(final Call call) {
-
                 ArrayList<Contact> contacts = Singleton.getInstance().getListContact();
-
                 String text = call.getPhNumber();
+
                 for (Contact c : contacts) {
-                    if (c.getPhone_number() == call.getPhNumber()) {
+                    String cNumber = c.getPhone_number();
+                    if (cNumber.contentEquals(text)) {
+                        text = c.getName();
+                        break;
+                    }
+                    if (cNumber.length() > 2 && cNumber.substring(3).contentEquals(text)) {
                         text = c.getName();
                         break;
                     }

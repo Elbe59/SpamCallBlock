@@ -27,31 +27,18 @@ public class ContactActivity extends AppCompatActivity {
 
     private String TAG = "contact_activity";
 
-    private final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
-
-    private final String FILTER = DISPLAY_NAME + " NOT LIKE '%@%'";
-
-    private final String ORDER = String.format("%1$s COLLATE NOCASE", DISPLAY_NAME);
-
-    @SuppressLint("InlinedApi")
-    private final String[] PROJECTION = {
-            ContactsContract.Contacts._ID,
-            DISPLAY_NAME,
-            ContactsContract.Contacts.HAS_PHONE_NUMBER
-    };
-
-
     RecyclerView recyclerview_contacts_list;
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager layoutManager;
+
+    private boolean actualSort;
+    Button button_contact_sort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
-
-        readContacts();
-
+        
         recyclerview_contacts_list = findViewById(R.id.recyclerview_contacts_list);
 
         // We define and set our LayoutManager : Linear vertical (implicit)
@@ -62,44 +49,32 @@ public class ContactActivity extends AppCompatActivity {
         mAdapter = new MyContactAdapter();
         recyclerview_contacts_list.setAdapter(mAdapter);
 
+        // Button to display all the contacts or only blocked one*
+        actualSort = false;
+        button_contact_sort = findViewById(R.id.button_contact_sort);
+        button_contact_sort.setText("Blocked");
+        button_contact_sort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actualSort = !actualSort;
+                if(actualSort){
+                    button_contact_sort.setText("All");
+
+                    // We instantiate and bind our Adapter
+                    mAdapter = new MyContactAdapter();
+                    recyclerview_contacts_list.setAdapter(mAdapter);
+                }
+                else {
+                    button_contact_sort.setText("Blocked");
+                    // We instantiate and bind our Adapter
+                    mAdapter = new MyContactAdapter();
+                    recyclerview_contacts_list.setAdapter(mAdapter);
+                }
+            }
+        });
+
     }
 
-    private void readContacts() {
-        ContentResolver contentResolver=getContentResolver();
-        ArrayList<Contact> contacts = new ArrayList<Contact>();
-        ContentResolver cr = getContentResolver();
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, PROJECTION, FILTER, null, ORDER);
-        if (cursor != null && cursor.moveToFirst()) {
-
-            do {
-                // get the contact's information
-                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                String name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
-                Integer hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
-
-                // get the user's phone number
-                String phone = null;
-                if (hasPhone > 0) {
-                    Cursor cp = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
-                    if (cp != null && cp.moveToFirst()) {
-                        phone = cp.getString(cp.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        cp.close();
-                    }
-                }
-
-                if(phone != null && phone.length() > 0){
-                    Log.d(TAG, phone + " " + name);
-                    Contact contact = new Contact(name, phone);
-                    contacts.add(contact);
-                }
-
-
-            } while (cursor.moveToNext());
-            Singleton.getInstance().setContacts(contacts);
-            cursor.close();
-        }
-    }
 
     public class MyContactAdapter extends RecyclerView.Adapter<MyContactAdapter.MyContactViewHolder>{
 
@@ -113,12 +88,23 @@ public class ContactActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MyContactAdapter.MyContactViewHolder holder, int position) {
-            holder.setContact(Singleton.getInstance().getContactAtPosition(position));
+            if(actualSort){
+                //Singleton.getInstance().getContactBlockedAtPosition(position);
+                holder.setContact(Singleton.getInstance().getContactBlockedAtPosition(position));
+            }
+            else{
+                holder.setContact(Singleton.getInstance().getContactAtPosition(position));
+            }
         }
 
         @Override
         public int getItemCount() {
-            return Singleton.getInstance().getNumberContacts(); // We get the number of contacts from the singleton
+            if(actualSort){
+                return Singleton.getInstance().getNumberContactsBlocked(); // We get the number of contacts from the singleton
+            }
+            else{
+                return Singleton.getInstance().getNumberContacts(); // We get the number of contacts from the singleton
+            }
         }
 
         public class MyContactViewHolder extends RecyclerView.ViewHolder { // Things to display in the item
@@ -147,9 +133,13 @@ public class ContactActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (Singleton.getInstance().isBlocked(contact)) {
-                            Singleton.getInstance().unblock(contact);
+                            mAdapter = new MyContactAdapter();
+                            recyclerview_contacts_list.setAdapter(mAdapter);
+
                             button_cell_contact_block.setBackgroundColor(R.color.blue_project);
                             button_cell_contact_block.setText("block");
+                            Singleton.getInstance().unblock(contact);
+
                             Log.d(TAG, "UnBlock Contact: " + contact.getPhone_number());
                         } else {
                             Singleton.getInstance().block(contact);

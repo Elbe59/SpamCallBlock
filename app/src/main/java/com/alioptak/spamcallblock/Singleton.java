@@ -12,16 +12,19 @@ public class Singleton {
 
     private Singleton() {
          contacts = new ArrayList<Contact>();
-         blockedNumbers = new ArrayList<String>();
+        blockedNumbers = new ArrayList<String>();
+        blockedContacts = new ArrayList<>();
     }
 
     private ArrayList<Contact> contacts;
     private ArrayList<String> blockedNumbers;
+    private ArrayList<Contact> blockedContacts;
     private ArrayList<Call> history_calls= new ArrayList<>();
 
     /** CONTACTS **/
     public void block(Contact c){
         blockedNumbers.add(c.getPhone_number());
+        blockedContacts.add(c);
     }
 
     /**
@@ -30,12 +33,8 @@ public class Singleton {
      */
     public Boolean unblock(Contact contact){
         boolean status = false;
-        for(String blocked_number : blockedNumbers){
-            if(blocked_number.equalsIgnoreCase(contact.getPhone_number())){
-                status = true;
-                this.blockedNumbers.remove(blocked_number);
-            }
-        }
+        this.blockedNumbers.remove(contact.getPhone_number());
+        this.blockedContacts.remove(contact);
         return status;
     }
 
@@ -51,9 +50,15 @@ public class Singleton {
         return this.contacts;
     }
 
+    public ArrayList<Contact> getListContactBlocked () {
+        return this.blockedContacts;
+    }
+
     public Contact getContactAtPosition(int position){
         return this.contacts.get(position);
     }
+    public Contact getContactBlockedAtPosition(int position){return this.blockedContacts.get(position); }
+
 
     public Boolean isBlocked(Contact c){
         return this.blockedNumbers.indexOf(c.getPhone_number()) != -1;
@@ -66,6 +71,11 @@ public class Singleton {
     public Integer getNumberBlocked(){
         return this.blockedNumbers.size();
     }
+
+    public Integer getNumberContactsBlocked(){
+        return this.blockedContacts.size();
+    }
+
 
     // we just need to subtract.
     public Integer getNumberNotBlocked(){
@@ -92,6 +102,12 @@ public class Singleton {
     }
 
     public void block(String phoneNumber){
+        for (Contact contact: contacts) {
+            if(contact.getPhone_number().contentEquals(phoneNumber)){
+                blockedContacts.add(contact);
+                break;
+            }
+        }
         blockedNumbers.add(phoneNumber);
     }
 
@@ -100,6 +116,12 @@ public class Singleton {
      * @return status  : false if the contact is not found
      */
     public Boolean unblock(String phoneNumber){
+        for (Contact contact: blockedContacts) {
+            if(contact.getPhone_number().contentEquals(phoneNumber)){
+                blockedContacts.remove(contact);
+                break;
+            }
+        }
         boolean status = false;
         for(String blocked_number : blockedNumbers){
             if(blocked_number.equalsIgnoreCase(phoneNumber)){
