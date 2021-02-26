@@ -6,10 +6,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest.permission;
+import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +24,22 @@ import android.widget.Toast;
 import com.alioptak.spamcallblock.database.DataBaseHandler;
 import com.alioptak.spamcallblock.service.PhoneStateBroadcastReceiver;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+
+    private final String DISPLAY_NAME = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ? ContactsContract.Contacts.DISPLAY_NAME_PRIMARY : ContactsContract.Contacts.DISPLAY_NAME;
+
+    private final String FILTER = DISPLAY_NAME + " NOT LIKE '%@%'";
+
+    private final String ORDER = String.format("%1$s COLLATE NOCASE", DISPLAY_NAME);
+
+    @SuppressLint("InlinedApi")
+    private final String[] PROJECTION = {
+            ContactsContract.Contacts._ID,
+            DISPLAY_NAME,
+            ContactsContract.Contacts.HAS_PHONE_NUMBER
+    };
 
     Button button_main_gocontact;
     Button button_main_gohistory;
@@ -31,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        askPermission( permission.READ_CONTACTS, 10);
 
         button_main_gohistory = findViewById(R.id.button_main_gohistory);
         button_main_gohistory.setOnClickListener(new View.OnClickListener(){
@@ -88,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 9:
                     break;
+                case 10:
+                    readContacts();
+
+
             }
         }
     }
@@ -107,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
             case 9:
                 permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
                 break;
+            case 10:
+                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+                readContacts();
             default:
                 permissionGranted = false;
         }
@@ -114,6 +142,49 @@ public class MainActivity extends AppCompatActivity {
             goToHistory();
         }else {
             Toast.makeText(this, "You don't assign permission.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void readContacts() {
+        ContentResolver contentResolver= getContentResolver();
+        ArrayList<Contact> contacts = new ArrayList<Contact>();
+        ContentResolver cr = getContentResolver();
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, PROJECTION, FILTER, null, ORDER);
+        if (cursor != null && cursor.moveToFirst()) {
+
+            do {
+                // get the contact's information
+                String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cursor.getString(cursor.getColumnIndex(DISPLAY_NAME));
+                Integer hasPhone = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                // get the user's phone number
+                String phone = null;
+                if (hasPhone > 0) {
+                    Cursor cp = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                    if (cp != null && cp.moveToFirst()) {
+                        phone = cp.getString(cp.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+                        cp.close();
+                    }
+                }
+
+
+                if(phone != null && phone.length() > 0){
+                    if(phone.length()>2){
+                        if(!phone.substring(0,3).contentEquals("+33") && phone.length()==10){
+                            phone = "+33" + phone.substring(1);
+                        }
+                    }
+                    Log.d(TAG, phone + " " + name);
+                    Contact contact = new Contact(name, phone);
+                    contacts.add(contact);
+                }
+
+
+            } while (cursor.moveToNext());
+            Singleton.getInstance().setContacts(contacts);
+            cursor.close();
         }
     }
 }
