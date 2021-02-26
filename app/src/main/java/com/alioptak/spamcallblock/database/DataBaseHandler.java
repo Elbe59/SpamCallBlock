@@ -17,8 +17,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "blockcall";
     public static final String CONTACTS_TABLE_NAME = "contact";
     public static final String CONTACTS_COLUMN_ID = "id";
-    public static final String CONTACTS_COLUMN_NAME = "phone_number";
-    public static final String CONTACTS_COLUMN_EMAIL = "isblock";
+    public static final String CONTACTS_COLUMN_PHONE_NUMBER = "phone_number";
+    public static final String CONTACTS_COLUMN_ISBLOCK = "isblock";
     private HashMap hp;
 
     public DataBaseHandler(Context context) {
@@ -36,19 +36,15 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
-        db.execSQL("DROP TABLE IF EXISTS contacts");
-        onCreate(db);
+
     }
 
-    public boolean insertContact (String name, String phone, String email, String street,String place) {
+    public boolean insertContact (Integer id, String phone_number, Integer isblock) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
+        contentValues.put("id", id);
+        contentValues.put("phone", phone_number);
+        contentValues.put("isblock", isblock);
         db.insert("contacts", null, contentValues);
         return true;
     }
@@ -65,14 +61,12 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateContact (Integer id, String name, String phone, String email, String street,String place) {
+    public boolean updateContact (Integer id, String phone_number, Integer isblock) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
-        contentValues.put("phone", phone);
-        contentValues.put("email", email);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
+        contentValues.put("id", id);
+        contentValues.put("phone", phone_number);
+        contentValues.put("isblock", isblock);
         db.update("contacts", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
     }
@@ -84,7 +78,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
                 new String[] { Integer.toString(id) });
     }
 
-    public ArrayList<String> getAllCotacts() {
+    public ArrayList<String> getAllContacts() {
         ArrayList<String> array_list = new ArrayList<String>();
 
         //hp = new HashMap();
@@ -93,7 +87,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)));
+            array_list.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_ID)));
             res.moveToNext();
         }
         return array_list;
