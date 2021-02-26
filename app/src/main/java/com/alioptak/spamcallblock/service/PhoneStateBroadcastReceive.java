@@ -1,19 +1,25 @@
 package com.alioptak.spamcallblock.service;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
+import android.telecom.PhoneAccountHandle;
+import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
-public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
+import androidx.annotation.RequiresApi;
+
+public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
 
     private String TAG = "Receiver";
 
-
+    @SuppressLint("MissingPermission")
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
@@ -24,8 +30,9 @@ public class PhoneStateBroadcastReceiver extends BroadcastReceiver {
                 if(phoneNumber != null && phoneNumber.length() != 0){
                     Log.d(TAG, "Incoming call: " + phoneNumber);
                     Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
-
-                    // We can plug a method here. We'll be able to check whether or not this number needs to be blocked
+                    // Here, we check whether or not we should block the incoming phone call.
+                    TelecomManager tcom = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                    tcom.endCall();
                 }
             }
         }

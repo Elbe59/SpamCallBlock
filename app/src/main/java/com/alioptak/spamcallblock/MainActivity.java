@@ -1,10 +1,5 @@
 package com.alioptak.spamcallblock;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest.permission;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,8 +11,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.alioptak.spamcallblock.database.DataBaseHandler;
-import com.alioptak.spamcallblock.service.PhoneStateBroadcastReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +51,10 @@ public class MainActivity extends AppCompatActivity {
         imgeview_main_activate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
+                askPermission( permission.ANSWER_PHONE_CALLS, 10);
                 askPermission(permission.READ_PHONE_STATE, 9);
+                askPermission(permission.MODIFY_PHONE_STATE, 11);
+                // Only then: proceed.
             }
         });
         DataBaseHandler db = new DataBaseHandler(this);
@@ -86,7 +88,10 @@ public class MainActivity extends AppCompatActivity {
                 case 8:
                     goToHistory();
                     break;
-                case 9:
+                case 9: // DONT ADD ANYTHING HERE.
+                case 10:
+                case 11:
+                    // Proceed!
                     break;
             }
         }
@@ -95,25 +100,27 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         boolean permissionGranted = false;
+        try {
+            permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         switch(requestCode){
             case 7:
-                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
                 if(permissionGranted) goToContact();
                 break;
             case 8:
-                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
                 if(permissionGranted) goToHistory();
                 break;
             case 9:
-                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+            case 10:
+            case 11:
                 break;
             default:
                 permissionGranted = false;
         }
-        if(permissionGranted){
-            goToHistory();
-        }else {
-            Toast.makeText(this, "You don't assign permission.", Toast.LENGTH_SHORT).show();
+        if(!permissionGranted){
+            Toast.makeText(this, "Error: You didn't give the permission. Impossible to launch the service.", Toast.LENGTH_SHORT).show();
         }
     }
 }
