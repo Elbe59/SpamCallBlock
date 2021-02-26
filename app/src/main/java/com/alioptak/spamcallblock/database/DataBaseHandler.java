@@ -12,6 +12,8 @@ import android.database.sqlite.SQLiteDatabase;
 
 import androidx.annotation.Nullable;
 
+import com.alioptak.spamcallblock.Contact;
+
 public class DataBaseHandler extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "blockcall";
@@ -59,6 +61,18 @@ public class DataBaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         int numRows = (int) DatabaseUtils.queryNumEntries(db, CONTACTS_TABLE_NAME);
         return numRows;
+    }
+    // code to add the new contact
+    public void addContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACTS_COLUMN_PHONE_NUMBER, contact.getPhone_number()); // Contact Phone
+
+        // Inserting Row
+        db.insert(CONTACTS_TABLE_NAME, null, values);
+        //2nd argument is String containing nullColumnHack
+        db.close(); // Closing database connection
     }
 
     public boolean updateContact (Integer id, String phone_number, Integer isblock) {

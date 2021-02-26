@@ -10,11 +10,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.alioptak.spamcallblock.database.DataBaseHandler;
 import com.alioptak.spamcallblock.service.PhoneStateBroadcastReceiver;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,6 +55,11 @@ public class MainActivity extends AppCompatActivity {
                 askPermission(permission.READ_PHONE_STATE, 9);
             }
         });
+        DataBaseHandler db = new DataBaseHandler(this);
+        // Inserting Contacts
+        Log.d("Insert: ", "Inserting ..");
+        db.addContact(new Contact("Ravi", "9100000000"));
+        db.addContact(new Contact("Srinivas", "9199999999"));
     }
 
     public void goToContact(){
