@@ -74,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 askPermission( permission.ANSWER_PHONE_CALLS, 10);
                 askPermission(permission.READ_PHONE_STATE, 9);
-                askPermission(permission.MODIFY_PHONE_STATE, 11);
                 // Only then: proceed.
             }
         });
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                     goToHistory();
                     break;
                 case 9: // DONT ADD ANYTHING HERE.
-                case 10:
                 case 11:
                     // Proceed!
                     break;
@@ -138,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 if(permissionGranted) goToHistory();
                 break;
             case 9:
-            case 10:
             case 11:
                 break;
             case 10:
