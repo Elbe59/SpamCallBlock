@@ -14,14 +14,11 @@ import androidx.annotation.Nullable;
 
 public class DataBaseHandler extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "MyDBName.db";
-    public static final String CONTACTS_TABLE_NAME = "contacts";
+    public static final String DATABASE_NAME = "blockcall";
+    public static final String CONTACTS_TABLE_NAME = "contact";
     public static final String CONTACTS_COLUMN_ID = "id";
-    public static final String CONTACTS_COLUMN_NAME = "name";
-    public static final String CONTACTS_COLUMN_EMAIL = "email";
-    public static final String CONTACTS_COLUMN_STREET = "street";
-    public static final String CONTACTS_COLUMN_CITY = "place";
-    public static final String CONTACTS_COLUMN_PHONE = "phone";
+    public static final String CONTACTS_COLUMN_NAME = "phone_number";
+    public static final String CONTACTS_COLUMN_EMAIL = "isblock";
     private HashMap hp;
 
     public DataBaseHandler(Context context) {
@@ -32,8 +29,8 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         // TODO Auto-generated method stub
         db.execSQL(
-                "create table contacts " +
-                        "(id integer primary key, name text,phone text,email text, street text,place text)"
+                "create table contact " +
+                        "(id integer primary key, phone_number, isblock)"
         );
     }
 
