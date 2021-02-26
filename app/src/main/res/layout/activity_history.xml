@@ -14,32 +14,16 @@
         android:weightSum="10"
         >
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:orientation="horizontal">
+            android:gravity="center|left"
+            android:textSize="22dp"
+            android:textColor="@color/blue_project"
+            android:text="Call history"
+            android:layout_weight="1"
 
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="center|left"
-                android:textSize="22dp"
-                android:textColor="@color/blue_project"
-                android:text="Call history"
-                android:layout_weight="1"
-
-                />
-
-            <Button
-                android:layout_width="80dp"
-                android:layout_height="40dp"
-                android:backgroundTint="@color/blue_project"
-                android:text="Sort"
-                android:id="@+id/button_history_sort"
-                />
-
-        </LinearLayout>
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview_history_calls"
