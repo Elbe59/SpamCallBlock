@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "911282110137",
+    "firebase_url": "https://spamblockcall-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "spamblockcall",
+    "storage_bucket": "spamblockcall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911282110137:android:e5e72d0b62ad418cbe6568",
+        "android_client_info": {
+          "package_name": "com.alioptak.spamcallblock"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911282110137-g5e208e042e9ok57u2debdc7rijbpl5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfv7j0QvL2IqPKKfXgZcpP28vTmkqClos"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911282110137-g5e208e042e9ok57u2debdc7rijbpl5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
