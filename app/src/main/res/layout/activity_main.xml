@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:ignore="MissingConstraints">
     <LinearLayout
+        android:paddingTop="20dp"
         android:id="@+id/linear_main_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
