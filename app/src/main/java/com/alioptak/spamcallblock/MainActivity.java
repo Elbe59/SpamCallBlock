@@ -3,11 +3,13 @@ package com.alioptak.spamcallblock;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.util.Log;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +27,12 @@ import androidx.core.content.ContextCompat;
 import com.alioptak.spamcallblock.database.DataBaseHandler;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +59,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ArrayList<String> liste = readFromFile(this);
+        Singleton.getInstance().setListNumberBlocked(liste);
+
+
         setContentView(R.layout.activity_main);
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -87,7 +100,17 @@ public class MainActivity extends AppCompatActivity {
         Log.d("Insert: ", "Inserting ..");
         db.addContact(new Contact("Ravi", "9100000000"));
         db.addContact(new Contact("Srinivas", "9199999999"));
+
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
+        writeToFile(newBlockedContact,this);
+        System.out.println("Méthode onPause called");
+    }
+
 
     public void goToContact(){
         Intent i = new Intent(MainActivity.this, ContactActivity.class);
@@ -119,6 +142,13 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 10:
                     readContacts();
+                    ArrayList<Contact> listContact = Singleton.getInstance().getListContact();
+                    for (Contact contact: listContact) {
+                        if(Singleton.getInstance().isBlocked(contact.getPhone_number())){
+                            Singleton.getInstance().blockContact(contact);
+                        }
+                    }
+
 
 
             }
@@ -195,5 +225,54 @@ public class MainActivity extends AppCompatActivity {
             Singleton.getInstance().setContacts(contacts);
             cursor.close();
         }
+    }
+
+    private void writeToFile(ArrayList<String> data, Context context) {//String data
+        try {
+            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            //outputStreamWriter.write(data);
+            //outputStreamWriter.close();
+            for (String str : data) {
+                str += "\n";
+                FileOutputStream output = openFileOutput("config.txt", MODE_APPEND);
+                output.write(str.getBytes());
+                if (output != null)
+                    output.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private ArrayList<String> readFromFile(Context context) {
+
+        ArrayList<String> res = new ArrayList<>();
+
+        try {
+            InputStream inputStream = context.openFileInput("config.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    res.add(receiveString);
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                //ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        return res;
     }
 }

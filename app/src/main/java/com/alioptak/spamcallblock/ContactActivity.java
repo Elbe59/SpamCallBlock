@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,6 +21,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -72,7 +80,33 @@ public class ContactActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
+        writeToFile(newBlockedContact,this);
+        System.out.println("Méthode onPauseContact called");
+    }
+
+    private void writeToFile(ArrayList<String> data, Context context) {//String data
+        try {
+            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            //outputStreamWriter.write(data);
+            //outputStreamWriter.close();
+            for (String str : data) {
+                str += "\n";
+                FileOutputStream output = openFileOutput("config.txt", MODE_APPEND);
+                output.write(str.getBytes());
+                if (output != null)
+                    output.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -89,7 +123,6 @@ public class ContactActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull MyContactAdapter.MyContactViewHolder holder, int position) {
             if(actualSort){
-                //Singleton.getInstance().getContactBlockedAtPosition(position);
                 holder.setContact(Singleton.getInstance().getContactBlockedAtPosition(position));
             }
             else{

@@ -18,6 +18,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -49,6 +55,33 @@ public class HistoryActivity extends AppCompatActivity {
         mAdapter = new HistoryActivity.MyHistoryAdapter();
         recyclerview_history_calls.setAdapter(mAdapter);
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
+        writeToFile(newBlockedContact,this);
+        System.out.println("Méthode onPauseHistory called");
+    }
+
+    private void writeToFile(ArrayList<String> data, Context context) {//String data
+        try {
+            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
+            //outputStreamWriter.write(data);
+            //outputStreamWriter.close();
+            for (String str : data) {
+                str += "\n";
+                FileOutputStream output = openFileOutput("config.txt", MODE_APPEND);
+                output.write(str.getBytes());
+                if (output != null)
+                    output.close();
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     private static void getCallDetails(Context context) {
         SimpleDateFormat formater = null;

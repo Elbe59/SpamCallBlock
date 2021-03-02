@@ -11,7 +11,7 @@ public class Singleton {
     }
 
     private Singleton() {
-         contacts = new ArrayList<Contact>();
+        contacts = new ArrayList<Contact>();
         blockedNumbers = new ArrayList<String>();
         blockedContacts = new ArrayList<>();
     }
@@ -24,6 +24,10 @@ public class Singleton {
     /** CONTACTS **/
     public void block(Contact c){
         blockedNumbers.add(c.getPhone_number());
+        blockedContacts.add(c);
+    }
+
+    public void blockContact(Contact c){
         blockedContacts.add(c);
     }
 
@@ -52,6 +56,13 @@ public class Singleton {
 
     public ArrayList<Contact> getListContactBlocked () {
         return this.blockedContacts;
+    }
+    public void setListContactBlocked(ArrayList<Contact> blockedContacts){this.blockedContacts = blockedContacts; }
+    public ArrayList<String> getListNumberBlocked () {
+        return this.blockedNumbers;
+    }
+    public void setListNumberBlocked (ArrayList<String> blockedNumbers) {
+        this.blockedNumbers = blockedNumbers ;
     }
 
     public Contact getContactAtPosition(int position){
