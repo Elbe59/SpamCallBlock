@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.alioptak.spamcallblock.Singleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -40,24 +41,28 @@ public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
                     Log.d(TAG, "Incoming call: " + phoneNumber);
                     Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
                     // Here, we check whether or not we should block the incoming phone call.
+                    TelecomManager tcom = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
 
-                    mDatabase = FirebaseDatabase.getInstance().getReference();
-                    mDatabase.child(phoneNumber).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            if (!task.isSuccessful()) {
-                                Log.d(TAG, "Not blocking, not in database.");
-                            }
-                            else {
-                                if(String.valueOf(task.getResult().getValue()).equalsIgnoreCase("1")){
-                                    TelecomManager tcom = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-                                    tcom.endCall();
-                                    Log.d(TAG, "Blocking!");
+                    if(Singleton.getInstance().getListNumberBlocked().contains(phoneNumber)){
+                        tcom.endCall();
+                        Log.d(TAG, "(local storage) Blocking!");
+                    }else{
+                        mDatabase = FirebaseDatabase.getInstance().getReference();
+                        mDatabase.child(phoneNumber).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.d(TAG, "Not blocking, not in database.");
+                                }
+                                else {
+                                    if(String.valueOf(task.getResult().getValue()).equalsIgnoreCase("1")){
+                                        tcom.endCall();
+                                        Log.d(TAG, "(database) Blocking!");
+                                    }
                                 }
                             }
-                        }
-                    });
-
+                        });
+                    }
                 }
             }
         }
