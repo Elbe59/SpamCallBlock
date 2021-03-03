@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
 
-    private String TAG = "Receiver";
+    private String TAG = "CallReceiver";
 
     @SuppressLint("MissingPermission")
     @RequiresApi(api = Build.VERSION_CODES.P)

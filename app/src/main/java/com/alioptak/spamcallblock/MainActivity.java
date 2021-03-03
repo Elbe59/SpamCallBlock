@@ -64,21 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         Singleton.getInstance().setListNumberBlocked(StorageManager.readFileAsString(this));
 
-        /*ArrayList<String> liste = readFromFile(this);
-        int end = liste.size();
-        Set<String> set = new HashSet<>();
-        for(int i = 0; i < end; i++){
-            set.add(liste.get(i));
-        }
-        Iterator<String> it = set.iterator();
-        ArrayList<String> newListe = new ArrayList<>();
-        while(it.hasNext()) {
-            //System.out.println(it.next());
-            newListe.add(it.next());
-        }
-        Singleton.getInstance().setListNumberBlocked(newListe);*/
-
-
         setContentView(R.layout.activity_main);
 
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);

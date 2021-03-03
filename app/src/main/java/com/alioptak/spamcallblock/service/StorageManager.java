@@ -51,7 +51,6 @@ public class StorageManager {
         }
         Set<String> set_blocked = new HashSet<String>(Arrays.asList(stringBuilder.toString().split(" ")));
         ArrayList<String> blocked = new ArrayList<String>(set_blocked);
-        blocked.remove(0);
         Log.d(TAG, blocked.toString());
         return blocked;
     }
