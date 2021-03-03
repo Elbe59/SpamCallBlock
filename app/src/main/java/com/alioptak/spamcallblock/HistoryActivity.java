@@ -67,24 +67,6 @@ public class HistoryActivity extends AppCompatActivity {
         System.out.println("Méthode onPauseHistory called");
     }
 
-    private void writeToFile(ArrayList<String> data, Context context) {//String data
-        try {
-            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
-            //outputStreamWriter.write(data);
-            //outputStreamWriter.close();
-            for (String str : data) {
-                str += "\n";
-                FileOutputStream output = openFileOutput("config.txt", MODE_PRIVATE);
-                output.write(str.getBytes());
-                if (output != null)
-                    output.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private static void getCallDetails(Context context) {
         SimpleDateFormat formater = null;
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");

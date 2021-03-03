@@ -10,6 +10,8 @@ public class Singleton {
         return ourInstance;
     }
 
+
+
     private Singleton() {
         contacts = new ArrayList<Contact>();
         blockedNumbers = new ArrayList<String>();

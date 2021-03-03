@@ -1,5 +1,6 @@
 package com.alioptak.spamcallblock;
 
+import android.Manifest;
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
 
     private final String ORDER = String.format("%1$s COLLATE NOCASE", DISPLAY_NAME);
 
+    private boolean STATUS = false;
+
+
     @SuppressLint("InlinedApi")
     private final String[] PROJECTION = {
             ContactsContract.Contacts._ID,
@@ -55,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     Button button_main_gocontact;
     Button button_main_gohistory;
     ImageView imgeview_main_activate;
+    TextView textview_main_activate;
     String TAG = "MainActivity";
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -70,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().goOnline();
 
         askPermission( permission.READ_CONTACTS, 10);
-        askPermission( permission.READ_EXTERNAL_STORAGE, 12);
-        askPermission( permission.WRITE_EXTERNAL_STORAGE, 13);
 
         button_main_gohistory = findViewById(R.id.button_main_gohistory);
         button_main_gohistory.setOnClickListener(new View.OnClickListener(){
@@ -85,17 +91,40 @@ public class MainActivity extends AppCompatActivity {
         button_main_gocontact.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                askPermission( permission.READ_CONTACTS, 7);
+                //askPermission( permission.READ_CONTACTS, 7);
             }
         });
 
+
         imgeview_main_activate = findViewById(R.id.imgeview_main_activate);
+        textview_main_activate = findViewById(R.id.textview_main_activate);
         imgeview_main_activate.setOnClickListener(new View.OnClickListener(){
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
+
+                if(STATUS){
+                    String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res = getResources().getDrawable(imageResource);
+                    imgeview_main_activate.setImageDrawable(res);
+                    textview_main_activate.setText("Click on image to activate SPAMCALLBLOCKER");
+                    STATUS = !STATUS;
+                }
+                else{
+                    String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
+                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                    Drawable res = getResources().getDrawable(imageResource);
+                    imgeview_main_activate.setImageDrawable(res);
+                    textview_main_activate.setText("Click on image to desactivate SPAMCALLBLOCKER");
+                    STATUS = !STATUS;
+
+                }
                 askPermission( permission.ANSWER_PHONE_CALLS, 9);
                 askPermission(permission.READ_PHONE_STATE, 9);
-                // Only then: proceed.
+                askPermission( permission.READ_EXTERNAL_STORAGE, 9);
+                askPermission( permission.WRITE_EXTERNAL_STORAGE, 9);
+                // Only then: proceed.*/
             }
         });
 
@@ -136,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
                     goToHistory();
                     break;
                 case 9: // DONT ADD ANYTHING HERE.
-                case 11:
-                    // Proceed!
-                    break;
                 case 10:
                     Log.d(TAG, ">Contacts...");
                     readContacts();
@@ -148,11 +174,6 @@ public class MainActivity extends AppCompatActivity {
                             Singleton.getInstance().blockContact(contact);
                         }
                     }
-                case 12:
-                case 13:
-                    break;
-
-
             }
         }
     }
@@ -161,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         boolean permissionGranted = false;
         try {
-            permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
+            permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            System.out.println("GRANTED");
         }catch (Exception e){
         }
         switch(requestCode){
@@ -172,10 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 if(permissionGranted) goToHistory();
                 break;
             case 9:
-            case 11:
-            case 12:
-            case 13:
-                break;
+                if(permissionGranted) System.out.print("coucou");
             case 10:
                 if(permissionGranted){
                     Log.d(TAG, "Contacts...");
@@ -212,8 +231,6 @@ public class MainActivity extends AppCompatActivity {
                         cp.close();
                     }
                 }
-
-
                 if(phone != null && phone.length() > 0){
                     if(phone.length()>2){
                         if(!phone.substring(0,3).contentEquals("+33") && phone.length()==10){
@@ -224,8 +241,6 @@ public class MainActivity extends AppCompatActivity {
                     Contact contact = new Contact(name, phone);
                     contacts.add(contact);
                 }
-
-
             } while (cursor.moveToNext());
             Singleton.getInstance().setContacts(contacts);
             cursor.close();
