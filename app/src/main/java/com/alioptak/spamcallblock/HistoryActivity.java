@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alioptak.spamcallblock.service.StorageManager;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -61,7 +63,7 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
-        writeToFile(newBlockedContact,this);
+        StorageManager.writeStringAsFile(this, newBlockedContact);
         System.out.println("Méthode onPauseHistory called");
     }
 

@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.alioptak.spamcallblock.database.DataBaseHandler;
+import com.alioptak.spamcallblock.service.StorageManager;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.BufferedReader;
@@ -31,8 +31,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -59,7 +61,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ArrayList<String> liste = readFromFile(this);
+
+        Singleton.getInstance().setListNumberBlocked(StorageManager.readFileAsString(this));
+
+        /*ArrayList<String> liste = readFromFile(this);
         int end = liste.size();
         Set<String> set = new HashSet<>();
         for(int i = 0; i < end; i++){
@@ -71,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             //System.out.println(it.next());
             newListe.add(it.next());
         }
-        Singleton.getInstance().setListNumberBlocked(newListe);
+        Singleton.getInstance().setListNumberBlocked(newListe);*/
 
 
         setContentView(R.layout.activity_main);
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         askPermission( permission.READ_CONTACTS, 10);
         askPermission( permission.READ_EXTERNAL_STORAGE, 12);
         askPermission( permission.WRITE_EXTERNAL_STORAGE, 13);
+
         button_main_gohistory = findViewById(R.id.button_main_gohistory);
         button_main_gohistory.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -107,11 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 // Only then: proceed.
             }
         });
-        DataBaseHandler db = new DataBaseHandler(this);
-        // Inserting Contacts
-        Log.d("Insert: ", "Inserting ..");
-        db.addContact(new Contact("Ravi", "9100000000"));
-        db.addContact(new Contact("Srinivas", "9199999999"));
+
 
     }
 
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
-        writeToFile(newBlockedContact,this);
+        StorageManager.writeStringAsFile(this, newBlockedContact);
         System.out.println("Méthode onPause called");
     }
 
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                     // Proceed!
                     break;
                 case 10:
+                    Log.d(TAG, ">Contacts...");
                     readContacts();
                     ArrayList<Contact> listContact = Singleton.getInstance().getListContact();
                     for (Contact contact: listContact) {
@@ -175,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
         }catch (Exception e){
-            e.printStackTrace();
         }
         switch(requestCode){
             case 7:
@@ -190,8 +192,10 @@ public class MainActivity extends AppCompatActivity {
             case 13:
                 break;
             case 10:
-                permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
-                readContacts();
+                if(permissionGranted){
+                    Log.d(TAG, "Contacts...");
+                    readContacts();
+                }
             default:
                 permissionGranted = false;
         }
@@ -231,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                             phone = "+33" + phone.substring(1);
                         }
                     }
-                    Log.d(TAG, phone + " " + name);
+                    Log.d(TAG, phone + "->" + name);
                     Contact contact = new Contact(name, phone);
                     contacts.add(contact);
                 }
@@ -243,52 +247,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void writeToFile(ArrayList<String> data, Context context) {//String data
-        try {
-            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
-            //outputStreamWriter.write(data);
-            //outputStreamWriter.close();
-            for (String str : data) {
-                str += "\n";
-                FileOutputStream output = openFileOutput("config.txt", MODE_PRIVATE);
-                output.write(str.getBytes());
-                if (output != null)
-                    output.close();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private ArrayList<String> readFromFile(Context context) {
-
-        ArrayList<String> res = new ArrayList<>();
-
-        try {
-            InputStream inputStream = context.openFileInput("config.txt");
-
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    res.add(receiveString);
-                    stringBuilder.append("\n").append(receiveString);
-                }
-
-                inputStream.close();
-                //ret = stringBuilder.toString();
-            }
-        }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        }
-        return res;
-    }
 }

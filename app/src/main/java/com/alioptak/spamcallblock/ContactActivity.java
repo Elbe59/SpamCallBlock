@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alioptak.spamcallblock.service.StorageManager;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -91,80 +93,10 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
-        try {
-            writeToFile(newBlockedContact,this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Méthode onPauseContact called");
-        ArrayList<String> liste = null;
-        try {
-            liste = readFromFile(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        int end = liste.size();
-        Set<String> set = new HashSet<>();
-        for(int i = 0; i < end; i++){
-            set.add(liste.get(i));
-        }
-        Iterator<String> it = set.iterator();
-        ArrayList<String> newListe = new ArrayList<>();
-        int compteur = 0;
-        while(it.hasNext()) {
-            newListe.add(it.next());
-        }
+        StorageManager.writeStringAsFile(this, newBlockedContact);
     }
-
-    private void writeToFile(ArrayList<String> data, Context context) throws IOException {//String data
-        String res="\n";
-        for (String str : data) {
-            System.out.println(str);
-            str += "\n";
-            //FileWriter output = new FileWriter("config.txt",false);
-            res = str;
-        }
-        File path = context.getFilesDir();
-        File file = new File(path, "test.txt");
-        FileOutputStream stream = null;
-        try {
-            stream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        try {
-            stream.write(res.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            stream.close();
-        }
-        /*try {
-            //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
-            //outputStreamWriter.write(data);
-            //outputStreamWriter.close();
-            String res="\n";
-            for (String str : data) {
-                System.out.println(str);
-                str += "\n";
-                //FileWriter output = new FileWriter("config.txt",false);
-                res = str;
-            }
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_APPEND));
-
-            //FileOutputStream output = openFileOutput("config.txt", MODE_PRIVATE);
-
-            outputStreamWriter.write(res);
-            if (outputStreamWriter != null)
-                outputStreamWriter.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-    }
-
 
     public class MyContactAdapter extends RecyclerView.Adapter<MyContactAdapter.MyContactViewHolder>{
 
