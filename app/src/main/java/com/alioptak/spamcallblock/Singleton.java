@@ -37,8 +37,22 @@ public class Singleton {
      */
     public Boolean unblock(Contact contact){
         boolean status = false;
-        this.blockedNumbers.remove(contact.getPhone_number());
-        this.blockedContacts.remove(contact);
+        ArrayList<String> new1= new ArrayList<>();
+        ArrayList<Contact> new2= new ArrayList<>();
+        for (String number: this.blockedNumbers) {
+            if(!number.contentEquals(contact.getPhone_number())){
+                new1.add(number);
+            }
+        }
+        for (Contact contactTest: this.blockedContacts) {
+            if(contactTest != contact){
+                new2.add(contactTest);
+            }
+        }
+        this.blockedContacts = new2;
+        this.blockedNumbers = new1;
+        //this.blockedNumbers.remove(contact.getPhone_number());
+        //this.blockedContacts.remove(contact);
         return status;
     }
 
@@ -127,20 +141,35 @@ public class Singleton {
      * @return status  : false if the contact is not found
      */
     public Boolean unblock(String phoneNumber){
-        for (Contact contact: blockedContacts) {
+        boolean status = false;
+        ArrayList<String> new1= new ArrayList<>();
+        ArrayList<Contact> new2= new ArrayList<>();
+        for (String number: blockedNumbers) {
+            if(!number.contentEquals(phoneNumber)){
+                new1.add(number);
+            }
+        }
+        for (Contact contactTest: blockedContacts) {
+            if(!contactTest.getPhone_number().contentEquals(phoneNumber)){
+                new2.add(contactTest);
+            }
+        }
+        this.blockedNumbers = new1;
+        this.blockedContacts = new2;
+        /*for (Contact contact: blockedContacts) {
             if(contact.getPhone_number().contentEquals(phoneNumber)){
                 blockedContacts.remove(contact);
                 break;
             }
         }
-        boolean status = false;
+
         for(String blocked_number : blockedNumbers){
             if(blocked_number.equalsIgnoreCase(phoneNumber)){
                 status = true;
                 this.blockedNumbers.remove(blocked_number);
                 break;
             }
-        }
+        }*/
         return status;
     }
 

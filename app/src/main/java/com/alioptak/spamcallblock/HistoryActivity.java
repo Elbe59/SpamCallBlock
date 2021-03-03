@@ -72,7 +72,7 @@ public class HistoryActivity extends AppCompatActivity {
             //outputStreamWriter.close();
             for (String str : data) {
                 str += "\n";
-                FileOutputStream output = openFileOutput("config.txt", MODE_APPEND);
+                FileOutputStream output = openFileOutput("config.txt", MODE_PRIVATE);
                 output.write(str.getBytes());
                 if (output != null)
                     output.close();

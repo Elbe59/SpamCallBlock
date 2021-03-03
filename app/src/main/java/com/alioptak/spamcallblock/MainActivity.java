@@ -9,16 +9,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -34,6 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,7 +60,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ArrayList<String> liste = readFromFile(this);
-        Singleton.getInstance().setListNumberBlocked(liste);
+        int end = liste.size();
+        Set<String> set = new HashSet<>();
+        for(int i = 0; i < end; i++){
+            set.add(liste.get(i));
+        }
+        Iterator<String> it = set.iterator();
+        ArrayList<String> newListe = new ArrayList<>();
+        while(it.hasNext()) {
+            //System.out.println(it.next());
+            newListe.add(it.next());
+        }
+        Singleton.getInstance().setListNumberBlocked(newListe);
 
 
         setContentView(R.layout.activity_main);
@@ -69,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().goOnline();
 
         askPermission( permission.READ_CONTACTS, 10);
-
+        askPermission( permission.READ_EXTERNAL_STORAGE, 12);
+        askPermission( permission.WRITE_EXTERNAL_STORAGE, 13);
         button_main_gohistory = findViewById(R.id.button_main_gohistory);
         button_main_gohistory.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -90,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         imgeview_main_activate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                askPermission( permission.ANSWER_PHONE_CALLS, 10);
+                askPermission( permission.ANSWER_PHONE_CALLS, 9);
                 askPermission(permission.READ_PHONE_STATE, 9);
                 // Only then: proceed.
             }
@@ -148,7 +160,9 @@ public class MainActivity extends AppCompatActivity {
                             Singleton.getInstance().blockContact(contact);
                         }
                     }
-
+                case 12:
+                case 13:
+                    break;
 
 
             }
@@ -172,6 +186,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 9:
             case 11:
+            case 12:
+            case 13:
                 break;
             case 10:
                 permissionGranted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
@@ -234,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
             //outputStreamWriter.close();
             for (String str : data) {
                 str += "\n";
-                FileOutputStream output = openFileOutput("config.txt", MODE_APPEND);
+                FileOutputStream output = openFileOutput("config.txt", MODE_PRIVATE);
                 output.write(str.getBytes());
                 if (output != null)
                     output.close();

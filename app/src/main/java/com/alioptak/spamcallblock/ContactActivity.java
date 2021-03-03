@@ -22,14 +22,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class ContactActivity extends AppCompatActivity {
 
@@ -86,27 +92,77 @@ public class ContactActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
-        writeToFile(newBlockedContact,this);
+        try {
+            writeToFile(newBlockedContact,this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.out.println("Méthode onPauseContact called");
+        ArrayList<String> liste = null;
+        try {
+            liste = readFromFile(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int end = liste.size();
+        Set<String> set = new HashSet<>();
+        for(int i = 0; i < end; i++){
+            set.add(liste.get(i));
+        }
+        Iterator<String> it = set.iterator();
+        ArrayList<String> newListe = new ArrayList<>();
+        int compteur = 0;
+        while(it.hasNext()) {
+            newListe.add(it.next());
+        }
     }
 
-    private void writeToFile(ArrayList<String> data, Context context) {//String data
+    private void writeToFile(ArrayList<String> data, Context context) throws IOException {//String data
+        String res="\n";
+        for (String str : data) {
+            System.out.println(str);
+            str += "\n";
+            //FileWriter output = new FileWriter("config.txt",false);
+            res = str;
+        }
+        File path = context.getFilesDir();
+        File file = new File(path, "test.txt");
+        FileOutputStream stream = null;
         try {
+            stream = new FileOutputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        try {
+            stream.write(res.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            stream.close();
+        }
+        /*try {
             //OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_PRIVATE));
             //outputStreamWriter.write(data);
             //outputStreamWriter.close();
+            String res="\n";
             for (String str : data) {
+                System.out.println(str);
                 str += "\n";
-                FileOutputStream output = openFileOutput("config.txt", MODE_APPEND);
-                output.write(str.getBytes());
-                if (output != null)
-                    output.close();
+                //FileWriter output = new FileWriter("config.txt",false);
+                res = str;
             }
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("config.txt", Context.MODE_APPEND));
+
+            //FileOutputStream output = openFileOutput("config.txt", MODE_PRIVATE);
+
+            outputStreamWriter.write(res);
+            if (outputStreamWriter != null)
+                outputStreamWriter.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
@@ -190,5 +246,82 @@ public class ContactActivity extends AppCompatActivity {
                 textview_cell_contact_name.setText(text);
             }
         }
+    }
+    /*private ArrayList<String> readFromFile(Context context) {
+
+        ArrayList<String> res = new ArrayList<>();
+        String ret;
+        try {
+            InputStream inputStream = context.openFileInput("config.txt");
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    System.out.println("receive "+receiveString);
+                    res.add(receiveString);
+                    stringBuilder.append("\n").append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+                System.out.println("cc"+ret);
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        return res;
+    }*/
+    private ArrayList<String> readFromFile(Context context) throws IOException {
+        ArrayList<String> res = new ArrayList<>();
+
+        File path = context.getFilesDir();
+        File file = new File(path, "test.txt");
+        int length = (int) file.length();
+
+        byte[] bytes = new byte[length];
+
+        FileInputStream in = new FileInputStream(file);
+        try {
+            in.read(bytes);
+        } finally {
+            in.close();
+        }
+
+        String contents = new String(bytes);
+        System.out.println("My content: "+contents);
+        return res;
+
+        /*ArrayList<String> res = new ArrayList<>();
+        String ret;
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(context.openFileInput("config.txt"));
+            if ( inputStreamReader != null ) {
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    System.out.println("receive "+receiveString);
+                    res.add(receiveString);
+                    stringBuilder.append(receiveString);
+                }
+                bufferedReader.close();
+                ret = stringBuilder.toString();
+                System.out.println("cc"+ret);
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+        return res;*/
     }
 }
