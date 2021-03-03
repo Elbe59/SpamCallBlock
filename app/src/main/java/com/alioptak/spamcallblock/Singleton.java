@@ -10,13 +10,15 @@ public class Singleton {
         return ourInstance;
     }
 
-
+    private boolean STATUS_APPLICATION;
 
     private Singleton() {
         contacts = new ArrayList<Contact>();
         blockedNumbers = new ArrayList<String>();
         blockedContacts = new ArrayList<>();
+        STATUS_APPLICATION = false;
     }
+
 
     private ArrayList<Contact> contacts;
     private ArrayList<String> blockedNumbers;
@@ -177,5 +179,13 @@ public class Singleton {
 
     public void resetCalls(){
         this.history_calls = new ArrayList<Call>();
+    }
+
+    public boolean getSTATUS_APPLICATION() {
+        return STATUS_APPLICATION;
+    }
+
+    public void setSTATUS_APPLICATION(boolean STATUS_APPLICATION) {
+        this.STATUS_APPLICATION = STATUS_APPLICATION;
     }
 }

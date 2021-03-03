@@ -63,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgeview_main_activate;
     TextView textview_main_activate;
     String TAG = "MainActivity";
-
+    public boolean getStatus(){
+        return STATUS;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         button_main_gocontact.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //askPermission( permission.READ_CONTACTS, 7);
+                askPermission( permission.READ_CONTACTS, 7);
             }
         });
 
@@ -102,28 +104,27 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
+                if( askPermission( permission.ANSWER_PHONE_CALLS, 9) && askPermission( permission.READ_PHONE_STATE, 11) && askPermission( permission.READ_EXTERNAL_STORAGE, 12) && askPermission( permission.WRITE_EXTERNAL_STORAGE, 13))
+                    if(Singleton.getInstance().getSTATUS_APPLICATION()){
+                        String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
+                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                        Drawable res = getResources().getDrawable(imageResource);
+                        imgeview_main_activate.setImageDrawable(res);
+                        textview_main_activate.setText("Click on image to activate SPAMCALLBLOCKER");
+                        Singleton.getInstance().setSTATUS_APPLICATION(false);
+                    }
+                    else{
 
-                if(STATUS){
-                    String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
-                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                    Drawable res = getResources().getDrawable(imageResource);
-                    imgeview_main_activate.setImageDrawable(res);
-                    textview_main_activate.setText("Click on image to activate SPAMCALLBLOCKER");
-                    STATUS = !STATUS;
-                }
-                else{
-                    String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
-                    int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                    Drawable res = getResources().getDrawable(imageResource);
-                    imgeview_main_activate.setImageDrawable(res);
-                    textview_main_activate.setText("Click on image to desactivate SPAMCALLBLOCKER");
-                    STATUS = !STATUS;
+                        String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
+                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+                        Drawable res = getResources().getDrawable(imageResource);
+                        imgeview_main_activate.setImageDrawable(res);
+                        textview_main_activate.setText("Click on image to desactivate SPAMCALLBLOCKER");
+                        Singleton.getInstance().setSTATUS_APPLICATION(true);
 
-                }
-                askPermission( permission.ANSWER_PHONE_CALLS, 9);
-                askPermission(permission.READ_PHONE_STATE, 9);
-                askPermission( permission.READ_EXTERNAL_STORAGE, 9);
-                askPermission( permission.WRITE_EXTERNAL_STORAGE, 9);
+
+                    }
+
                 // Only then: proceed.*/
             }
         });
@@ -151,12 +152,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void askPermission(String perm, int requestCode){
+    public boolean askPermission(String perm, int requestCode){
+        boolean autorisationValide =false;
         if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
             final String[] PERMISSIONS_STORAGE = {perm};
             ActivityCompat.requestPermissions(MainActivity.this, PERMISSIONS_STORAGE, requestCode);
 
         }else{
+            autorisationValide = true;
             switch(requestCode){
                 case 7:
                     goToContact();
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 case 8:
                     goToHistory();
                     break;
-                case 9: // DONT ADD ANYTHING HERE.
+                case 9: break;// DONT ADD ANYTHING HERE.
                 case 10:
                     Log.d(TAG, ">Contacts...");
                     readContacts();
@@ -174,8 +177,11 @@ public class MainActivity extends AppCompatActivity {
                             Singleton.getInstance().blockContact(contact);
                         }
                     }
+                case 11:
             }
         }
+        System.out.println(requestCode + "  " + autorisationValide);
+        return autorisationValide;
     }
 
     @Override
@@ -188,23 +194,29 @@ public class MainActivity extends AppCompatActivity {
         }
         switch(requestCode){
             case 7:
-                if(permissionGranted) goToContact();
+                if(permissionGranted){
+                    readContacts();
+                    goToContact();
+                }
                 break;
             case 8:
                 if(permissionGranted) goToHistory();
                 break;
-            case 9:
-                if(permissionGranted) System.out.print("coucou");
+            case 9: if(permissionGranted){ askPermission( permission.READ_PHONE_STATE, 11);}break;
             case 10:
                 if(permissionGranted){
                     Log.d(TAG, "Contacts...");
                     readContacts();
                 }
+                break;
+            case 11: if(permissionGranted){askPermission(permission.READ_EXTERNAL_STORAGE, 12);}break;
+            case 12: if(permissionGranted){askPermission(permission.WRITE_EXTERNAL_STORAGE, 13);}break;
+            case 13: break;
             default:
                 permissionGranted = false;
         }
         if(!permissionGranted){
-            Toast.makeText(this, "Error: You didn't give the permission. Impossible to launch the service.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error: You didn't give the permission. Impossible to launch the service." + requestCode, Toast.LENGTH_SHORT).show();
         }
     }
 
