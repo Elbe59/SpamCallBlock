@@ -76,11 +76,11 @@ public class HistoryActivity extends AppCompatActivity {
         Singleton.getInstance().resetCalls();
         while (cursor.moveToNext()) {
             String phNumber = cursor.getString(number);
-            if(phNumber.length()>2){
+            /*if(phNumber.length()>2){
                 if(!phNumber.substring(0,3).contentEquals("+33") && phNumber.length()==10){
                     phNumber = "+33" + phNumber.substring(1);
                 }
-            }
+            }*/
             String callDate = cursor.getString(date);
             Date callDayTime = new Date(Long.valueOf(callDate));
             formater = new SimpleDateFormat("dd/MM/yy");

@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
                         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                         Drawable res = getResources().getDrawable(imageResource);
                         imgeview_main_activate.setImageDrawable(res);
-                        textview_main_activate.setText("Click on image to activate SPAMCALLBLOCKER");
+                        textview_main_activate.setText("Deactivated.");
                         Singleton.getInstance().setSTATUS_APPLICATION(false);
                     }
                     else{
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                         int imageResource = getResources().getIdentifier(uri, null, getPackageName());
                         Drawable res = getResources().getDrawable(imageResource);
                         imgeview_main_activate.setImageDrawable(res);
-                        textview_main_activate.setText("Click on image to desactivate SPAMCALLBLOCKER");
+                        textview_main_activate.setText("Activated.");
                         Singleton.getInstance().setSTATUS_APPLICATION(true);
 
 
@@ -243,11 +243,12 @@ public class MainActivity extends AppCompatActivity {
                         cp.close();
                     }
                 }
+                Log.d(TAG, phone + "--->" + name);
                 if(phone != null && phone.length() > 0){
                     if(phone.length()>2){
-                        if(!phone.substring(0,3).contentEquals("+33") && phone.length()==10){
+                        /*if(!phone.substring(0,3).contentEquals("+33") && phone.length()==10){
                             phone = "+33" + phone.substring(1);
-                        }
+                        }*/
                     }
                     Log.d(TAG, phone + "->" + name);
                     Contact contact = new Contact(name, phone);

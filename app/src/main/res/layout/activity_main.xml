@@ -60,7 +60,7 @@
             android:id="@+id/textview_main_activate"
             android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:text="Click on image to activate SPAMCALLBLOCKER"
+            android:text="Deactivated"
             android:textSize="25dp"
             android:gravity="center"
             android:layout_marginBottom="20dp"/>
