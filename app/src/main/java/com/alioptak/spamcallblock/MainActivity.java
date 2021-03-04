@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public boolean askPermission(String perm, int requestCode){
         boolean autorisationValide =false;
         if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(this, perm)) {
@@ -250,7 +251,9 @@ public class MainActivity extends AppCompatActivity {
                         }*/
                     }
                     Log.d(TAG, phone + "->" + name);
-                    Contact contact = new Contact(name, PhoneNumberUtils.formatNumberToE164(phone, "FR"));
+                    String phoneH164 = PhoneNumberUtils.formatNumberToE164(phone, "FR");
+                    phone = phoneH164 == null ? phone : phoneH164;
+                    Contact contact = new Contact(name, phone);
                     contacts.add(contact);
                 }
             } while (cursor.moveToNext());

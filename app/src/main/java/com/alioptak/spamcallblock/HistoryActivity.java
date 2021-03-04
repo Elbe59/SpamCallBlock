@@ -43,6 +43,7 @@ public class HistoryActivity extends AppCompatActivity {
     RecyclerView.Adapter mAdapter;
     RecyclerView.LayoutManager layoutManager;
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,7 @@ public class HistoryActivity extends AppCompatActivity {
         Singleton.getInstance().resetCalls();
         while (cursor.moveToNext()) {
             String phNumber = cursor.getString(number);
+            if(phNumber == null) continue;
             /*if(phNumber.length()>2){
                 if(!phNumber.substring(0,3).contentEquals("+33") && phNumber.length()==10){
                     phNumber = "+33" + phNumber.substring(1);
