@@ -1,4 +1,4 @@
-package com.alioptak.spamcallblock;
+package com.alioptak.spamcallblock.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
@@ -21,17 +20,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alioptak.spamcallblock.Call;
+import com.alioptak.spamcallblock.Contact;
+import com.alioptak.spamcallblock.R;
+import com.alioptak.spamcallblock.Singleton;
 import com.alioptak.spamcallblock.service.StorageManager;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 
