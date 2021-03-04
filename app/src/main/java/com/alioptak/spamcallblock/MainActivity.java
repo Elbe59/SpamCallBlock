@@ -74,7 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        try{
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
         FirebaseDatabase.getInstance().goOnline();
         Singleton.getInstance().fetchFromDatabase();
 
