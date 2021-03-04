@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -48,9 +49,6 @@ public class MainActivity extends AppCompatActivity {
 
     private final String ORDER = String.format("%1$s COLLATE NOCASE", DISPLAY_NAME);
 
-    private boolean STATUS = false;
-
-
     @SuppressLint("InlinedApi")
     private final String[] PROJECTION = {
             ContactsContract.Contacts._ID,
@@ -63,16 +61,15 @@ public class MainActivity extends AppCompatActivity {
     ImageView imgeview_main_activate;
     TextView textview_main_activate;
     String TAG = "MainActivity";
-    public boolean getStatus(){
-        return STATUS;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
         Singleton.getInstance().setListNumberBlocked(StorageManager.readFileAsString(this));
+        StorageManager.writeStringAsFile(this,new ArrayList<String>());
 
         setContentView(R.layout.activity_main);
 
@@ -98,34 +95,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        imgeview_main_activate = findViewById(R.id.imgeview_main_activate);
-        textview_main_activate = findViewById(R.id.textview_main_activate);
+        imgeview_main_activate = (ImageView) findViewById(R.id.imgeview_main_activate);
+        textview_main_activate = (TextView) findViewById(R.id.textview_main_activate);
+        setImageStatusApplication(); // Display the Pause/Play Image depending on the application STATUS when we launch the application
         imgeview_main_activate.setOnClickListener(new View.OnClickListener(){
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 if( askPermission( permission.ANSWER_PHONE_CALLS, 9) && askPermission( permission.READ_PHONE_STATE, 11) && askPermission( permission.READ_EXTERNAL_STORAGE, 12) && askPermission( permission.WRITE_EXTERNAL_STORAGE, 13))
-                    if(Singleton.getInstance().getSTATUS_APPLICATION()){
-                        String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
-                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                        Drawable res = getResources().getDrawable(imageResource);
-                        imgeview_main_activate.setImageDrawable(res);
-                        textview_main_activate.setText("Deactivated.");
-                        Singleton.getInstance().setSTATUS_APPLICATION(false);
-                    }
-                    else{
-
-                        String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
-                        int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-                        Drawable res = getResources().getDrawable(imageResource);
-                        imgeview_main_activate.setImageDrawable(res);
-                        textview_main_activate.setText("Activated.");
-                        Singleton.getInstance().setSTATUS_APPLICATION(true);
-
-
-                    }
-
-                // Only then: proceed.*/
+                    setImageStatusApplication();
             }
         });
 
@@ -137,7 +115,27 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
         StorageManager.writeStringAsFile(this, newBlockedContact);
-        System.out.println("Méthode onPause called");
+    }
+
+    private void setImageStatusApplication(){
+        if(!Singleton.getInstance().getSTATUS_APPLICATION()){
+            String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            Drawable res = getResources().getDrawable(imageResource);
+            imgeview_main_activate.setImageDrawable(res);
+            textview_main_activate.setText("Desactivated.");
+            Singleton.getInstance().setSTATUS_APPLICATION(true);
+            Toast.makeText(getApplicationContext(),"The service is now turn OFF.", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            Drawable res = getResources().getDrawable(imageResource);
+            imgeview_main_activate.setImageDrawable(res);
+            textview_main_activate.setText("Activated.");
+            Singleton.getInstance().setSTATUS_APPLICATION(false);
+            Toast.makeText(getApplicationContext(),"The service is now turn ON.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -180,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 case 11:
             }
         }
-        System.out.println(requestCode + "  " + autorisationValide);
         return autorisationValide;
     }
 
@@ -189,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         boolean permissionGranted = false;
         try {
             permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-            System.out.println("GRANTED");
         }catch (Exception e){
         }
         switch(requestCode){

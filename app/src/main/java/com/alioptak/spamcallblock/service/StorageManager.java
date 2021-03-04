@@ -3,6 +3,8 @@ package com.alioptak.spamcallblock.service;
 import android.content.Context;
 import android.util.Log;
 
+import com.alioptak.spamcallblock.Singleton;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,9 +29,12 @@ public class StorageManager {
         try {
             PrintWriter out = new PrintWriter(new File(context.getFilesDir(), fileName));
             out.print("");
-            for(String num : fileContents){
-                out.println(num + " ");
+            if(fileContents !=null){
+                for(String num : fileContents){
+                    out.println(num + " ");
+                }
             }
+            out.println(Singleton.getInstance().getSTATUS_APPLICATION() + " ");
             out.close();
         } catch (IOException e) {
             Log.d(TAG, String.valueOf(e));
@@ -51,6 +56,16 @@ public class StorageManager {
         }
         Set<String> set_blocked = new HashSet<String>(Arrays.asList(stringBuilder.toString().split(" ")));
         ArrayList<String> blocked = new ArrayList<String>(set_blocked);
+        String status = blocked.get(blocked.size()-1);
+        if(status.contentEquals("true")){
+            Singleton.getInstance().setSTATUS_APPLICATION(true);
+            Log.d(TAG, "true");
+        }
+        else{
+            Singleton.getInstance().setSTATUS_APPLICATION(false);
+            Log.d(TAG, "false");
+        }
+        blocked.remove(blocked.size()-1);
         Log.d(TAG, blocked.toString());
         return blocked;
     }

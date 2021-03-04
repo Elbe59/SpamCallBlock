@@ -21,7 +21,6 @@ public class DataBaseActivity  extends AppCompatActivity {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            // addPreferencesFromResource(R.xml.my_preference_screen); // changer nom xm
         }
     }
 }

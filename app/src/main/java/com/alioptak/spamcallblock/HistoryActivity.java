@@ -56,7 +56,6 @@ public class HistoryActivity extends AppCompatActivity {
         // We instantiate and bind our Adapter
         mAdapter = new HistoryActivity.MyHistoryAdapter();
         recyclerview_history_calls.setAdapter(mAdapter);
-
     }
 
     @Override
@@ -64,7 +63,6 @@ public class HistoryActivity extends AppCompatActivity {
         super.onPause();
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
         StorageManager.writeStringAsFile(this, newBlockedContact);
-        System.out.println("Méthode onPauseHistory called");
     }
 
     private static void getCallDetails(Context context) {
@@ -72,7 +70,6 @@ public class HistoryActivity extends AppCompatActivity {
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
         int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
         int date = cursor.getColumnIndex(CallLog.Calls.DATE);
-        // VOUS AVEZ OUBLIÉ DE RESET LA LISTE DES CALLS!
         Singleton.getInstance().resetCalls();
         while (cursor.moveToNext()) {
             String phNumber = cursor.getString(number);

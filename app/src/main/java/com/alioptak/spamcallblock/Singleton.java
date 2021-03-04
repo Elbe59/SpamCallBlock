@@ -16,7 +16,7 @@ public class Singleton {
         contacts = new ArrayList<Contact>();
         blockedNumbers = new ArrayList<String>();
         blockedContacts = new ArrayList<>();
-        STATUS_APPLICATION = false;
+        //STATUS_APPLICATION = false;
     }
 
 
@@ -115,7 +115,6 @@ public class Singleton {
     /** CALLS **/
     public void addCall (Call call) {
         history_calls.add(call);
-        System.out.println("Ajout "+ call.getPhNumber() + " " + call.getDate());
     }
 
     public int getNumberOfCall () {
