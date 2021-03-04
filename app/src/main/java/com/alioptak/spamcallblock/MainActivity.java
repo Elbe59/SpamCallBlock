@@ -68,13 +68,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         Singleton.getInstance().setListNumberBlocked(StorageManager.readFileAsString(this));
         StorageManager.writeStringAsFile(this,new ArrayList<String>());
 
         setContentView(R.layout.activity_main);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseDatabase.getInstance().goOnline();
 
         askPermission( permission.READ_CONTACTS, 10);
