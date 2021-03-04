@@ -34,7 +34,7 @@ public class StorageManager {
                     out.println(num + " ");
                 }
             }
-            out.println(Singleton.getInstance().getSTATUS_APPLICATION() + " ");
+            out.println(Singleton.getInstance().getSTATUS_APPLICATION());
             out.close();
         } catch (IOException e) {
             Log.d(TAG, String.valueOf(e));
