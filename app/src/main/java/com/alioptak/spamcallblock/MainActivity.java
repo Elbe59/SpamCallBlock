@@ -245,11 +245,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.d(TAG, phone + "--->" + name);
                 if(phone != null && phone.length() > 0){
-                    if(phone.length()>2){
-                        /*if(!phone.substring(0,3).contentEquals("+33") && phone.length()==10){
-                            phone = "+33" + phone.substring(1);
-                        }*/
-                    }
                     Log.d(TAG, phone + "->" + name);
                     String phoneH164 = PhoneNumberUtils.formatNumberToE164(phone, "FR");
                     phone = phoneH164 == null ? phone : phoneH164;
