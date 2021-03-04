@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         StorageManager.writeStringAsFile(this, newBlockedContact);
         StorageManager.readFileAsString(this);
         Log.d(TAG,"STATUS: "+Singleton.getInstance().getSTATUS_APPLICATION());
-        createNotification();
+        if(Singleton.getInstance().getSTATUS_APPLICATION()) createNotification();
     }
 
     private void setImageStatusApplication(){
