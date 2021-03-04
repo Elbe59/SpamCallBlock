@@ -56,15 +56,14 @@ public class StorageManager {
         }
         Set<String> set_blocked = new HashSet<String>(Arrays.asList(stringBuilder.toString().split(" ")));
         ArrayList<String> blocked = new ArrayList<String>(set_blocked);
+        Log.d(TAG, blocked.toString());
         if(blocked.size() > 0){
             String status = blocked.get(blocked.size()-1);
             if(status.contentEquals("true")){
-                Singleton.getInstance().setSTATUS_APPLICATION(true);
-                Log.d(TAG, "true");
+                Singleton.getInstance().setSTATUS_APPLICATION(false);
             }
             else{
-                Singleton.getInstance().setSTATUS_APPLICATION(false);
-                Log.d(TAG, "false");
+                Singleton.getInstance().setSTATUS_APPLICATION(true);
             }
             blocked.remove(blocked.size()-1);
             Log.d(TAG, blocked.toString());

@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         imgeview_main_activate = (ImageView) findViewById(R.id.imgeview_main_activate);
         textview_main_activate = (TextView) findViewById(R.id.textview_main_activate);
+        Log.d(TAG, ">>>>>" + Singleton.getInstance().getSTATUS_APPLICATION());
         setImageStatusApplication(); // Display the Pause/Play Image depending on the application STATUS when we launch the application
         imgeview_main_activate.setOnClickListener(new View.OnClickListener(){
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             imgeview_main_activate.setImageDrawable(res);
             textview_main_activate.setText("Deactivated");
             Singleton.getInstance().setSTATUS_APPLICATION(true);
-            Toast.makeText(getApplicationContext(),"The service is now turn OFF.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"The service is now turned OFF.", Toast.LENGTH_SHORT).show();
         }
         else{
             String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             imgeview_main_activate.setImageDrawable(res);
             textview_main_activate.setText("Activated");
             Singleton.getInstance().setSTATUS_APPLICATION(false);
-            Toast.makeText(getApplicationContext(),"The service is now turn ON.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),"The service is now turned ON.", Toast.LENGTH_SHORT).show();
         }
     }
 

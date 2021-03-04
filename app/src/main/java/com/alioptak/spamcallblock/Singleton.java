@@ -13,8 +13,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Singleton {
 
@@ -199,7 +197,6 @@ public class Singleton {
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
                     task.getResult().getChildren().forEach(t -> {
-                        Log.d("Singleton", ">>" + t.getKey());
                         if(t != null) database_blocked.add(t.getKey());
                     });
                 }
