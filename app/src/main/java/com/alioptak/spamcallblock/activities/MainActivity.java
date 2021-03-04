@@ -2,6 +2,10 @@ package com.alioptak.spamcallblock.activities;
 
 import android.Manifest.permission;
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +25,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import com.alioptak.spamcallblock.Contact;
@@ -116,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         StorageManager.writeStringAsFile(this, newBlockedContact);
         StorageManager.readFileAsString(this);
         Log.d(TAG,"STATUS: "+Singleton.getInstance().getSTATUS_APPLICATION());
+        createNotification();
     }
 
     private void setImageStatusApplication(){
@@ -134,6 +141,11 @@ public class MainActivity extends AppCompatActivity {
             imgeview_main_activate.setImageDrawable(res);
             textview_main_activate.setText("Deactivated");
             Toast.makeText(getApplicationContext(),"The service is now turned OFF.", Toast.LENGTH_SHORT).show();
+            try{
+                deleteNotification();
+            }catch (Exception e){
+                Log.e(TAG, e.getMessage());
+            }
         }
     }
 
@@ -254,6 +266,45 @@ public class MainActivity extends AppCompatActivity {
 
             Singleton.getInstance().setContacts(contacts);
             cursor.close();
+        }
+    }
+
+    private void createNotification(){
+        createNotificationChannel();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(getApplicationContext(), "spamcallblock")
+                .setContentTitle("SpamCallBlock est actif !")
+                .setContentText("Les numéros bloqués ne seront donc pas notifiés")
+                .setOngoing(true)
+                .setSmallIcon(R.drawable.active_icon)
+                .setContentIntent(pendingIntent)
+                .setNotificationSilent()
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(888, notification);
+    }
+
+    private void deleteNotification(){
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.cancel(888);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "SPAMCALLBLOCKER";
+            String description = "indicator";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("spamcallblock", name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
     }
 

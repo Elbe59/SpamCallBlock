@@ -22,7 +22,7 @@ public class Singleton {
         return ourInstance;
     }
 
-    private boolean STATUS_APPLICATION;
+    private boolean STATUS_APPLICATION = true;
 
     private Singleton() {
         contacts = new ArrayList<Contact>();
