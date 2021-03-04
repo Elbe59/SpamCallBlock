@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telecom.PhoneAccountHandle;
 import android.telecom.TelecomManager;
+import android.telephony.PhoneNumberUtils;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (Singleton.getInstance().getSTATUS_APPLICATION()) {
+        if (!Singleton.getInstance().getSTATUS_APPLICATION()) {
             DatabaseReference mDatabase;
             Bundle extras = intent.getExtras();
             FirebaseDatabase.getInstance().goOnline();
@@ -40,6 +41,8 @@ public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
                 if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     if (phoneNumber != null && phoneNumber.length() != 0) {
+                        String pHNumber_H164 = PhoneNumberUtils.formatNumberToE164(phoneNumber, "FR");
+                        phoneNumber = pHNumber_H164 == null ? phoneNumber : pHNumber_H164;
                         Log.d(TAG, "Incoming call: " + phoneNumber);
                         Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
                         // Here, we check whether or not we should block the incoming phone call.

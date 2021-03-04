@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.provider.ContactsContract;
 import android.view.View;
@@ -181,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         return autorisationValide;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         boolean permissionGranted = false;
@@ -216,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void readContacts() {
         ContentResolver contentResolver= getContentResolver();
         ArrayList<Contact> contacts = new ArrayList<Contact>();
@@ -235,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     Cursor cp = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                             ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
                     if (cp != null && cp.moveToFirst()) {
-                        phone = cp.getString(cp.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER));
+                        phone = cp.getString(cp.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)); // Cannot normalize in emulator.
                         cp.close();
                     }
                 }
@@ -247,10 +250,12 @@ public class MainActivity extends AppCompatActivity {
                         }*/
                     }
                     Log.d(TAG, phone + "->" + name);
-                    Contact contact = new Contact(name, phone);
+                    Contact contact = new Contact(name, PhoneNumberUtils.formatNumberToE164(phone, "FR"));
                     contacts.add(contact);
                 }
             } while (cursor.moveToNext());
+
+
             Singleton.getInstance().setContacts(contacts);
             cursor.close();
         }

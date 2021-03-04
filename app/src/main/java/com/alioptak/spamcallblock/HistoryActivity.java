@@ -1,6 +1,7 @@
 package com.alioptak.spamcallblock;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,8 +10,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.telephony.PhoneNumberUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +68,7 @@ public class HistoryActivity extends AppCompatActivity {
         StorageManager.writeStringAsFile(this, newBlockedContact);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private static void getCallDetails(Context context) {
         SimpleDateFormat formater = null;
         Cursor cursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, CallLog.Calls.DATE + " DESC");
@@ -82,6 +86,8 @@ public class HistoryActivity extends AppCompatActivity {
             Date callDayTime = new Date(Long.valueOf(callDate));
             formater = new SimpleDateFormat("dd/MM/yy");
             String date_string = formater.format(callDayTime);
+            String pHNumber_H164 = PhoneNumberUtils.formatNumberToE164(phNumber, "FR");
+            phNumber = pHNumber_H164 == null ? phNumber : pHNumber_H164;
             Call call = new Call(phNumber,date_string);
             Singleton.getInstance().addCall(call);
         }
