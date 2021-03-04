@@ -32,7 +32,7 @@ public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (!Singleton.getInstance().getSTATUS_APPLICATION()) {
+        if (Singleton.getInstance().getSTATUS_APPLICATION()) {
             DatabaseReference mDatabase;
             Bundle extras = intent.getExtras();
             FirebaseDatabase.getInstance().goOnline();

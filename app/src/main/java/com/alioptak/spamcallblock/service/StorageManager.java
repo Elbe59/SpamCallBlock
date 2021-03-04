@@ -59,13 +59,17 @@ public class StorageManager {
         Log.d(TAG, blocked.toString());
         if(blocked.size() > 0){
             String status = blocked.get(blocked.size()-1);
-            if(status.contentEquals("true")){
-                Singleton.getInstance().setSTATUS_APPLICATION(false);
-            }
-            else{
+            if(blocked.contains("true")){
+                blocked.remove("true");
                 Singleton.getInstance().setSTATUS_APPLICATION(true);
             }
-            blocked.remove(blocked.size()-1);
+            else if(blocked.contains("false")){
+                blocked.remove("false");
+                Singleton.getInstance().setSTATUS_APPLICATION(false);
+            }
+            else {
+                Singleton.getInstance().setSTATUS_APPLICATION(false);
+            }
             Log.d(TAG, blocked.toString());
         }
         return blocked;

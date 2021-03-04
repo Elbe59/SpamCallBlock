@@ -28,7 +28,6 @@ public class Singleton {
         contacts = new ArrayList<Contact>();
         blockedNumbers = new ArrayList<String>();
         blockedContacts = new ArrayList<>();
-        //STATUS_APPLICATION = false;
     }
 
 

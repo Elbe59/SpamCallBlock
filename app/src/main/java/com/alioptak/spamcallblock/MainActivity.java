@@ -109,8 +109,10 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
-                if( askPermission( permission.ANSWER_PHONE_CALLS, 9) && askPermission( permission.READ_PHONE_STATE, 11) && askPermission( permission.READ_EXTERNAL_STORAGE, 12) && askPermission( permission.WRITE_EXTERNAL_STORAGE, 13))
+                if( askPermission( permission.ANSWER_PHONE_CALLS, 9) && askPermission( permission.READ_PHONE_STATE, 11) && askPermission( permission.READ_EXTERNAL_STORAGE, 12) && askPermission( permission.WRITE_EXTERNAL_STORAGE, 13)) {
+                    Singleton.getInstance().setSTATUS_APPLICATION(!Singleton.getInstance().getSTATUS_APPLICATION());
                     setImageStatusApplication();
+                }
             }
         });
 
@@ -120,28 +122,29 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
         ArrayList<String> newBlockedContact = Singleton.getInstance().getListNumberBlocked();
         StorageManager.writeStringAsFile(this, newBlockedContact);
+        StorageManager.readFileAsString(this);
+        Log.d(TAG,"STATUS: "+Singleton.getInstance().getSTATUS_APPLICATION());
     }
 
     private void setImageStatusApplication(){
-        if(!Singleton.getInstance().getSTATUS_APPLICATION()){
-            String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
-            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
-            Drawable res = getResources().getDrawable(imageResource);
-            imgeview_main_activate.setImageDrawable(res);
-            textview_main_activate.setText("Deactivated");
-            Singleton.getInstance().setSTATUS_APPLICATION(true);
-            Toast.makeText(getApplicationContext(),"The service is now turned OFF.", Toast.LENGTH_SHORT).show();
-        }
-        else{
+        if(Singleton.getInstance().getSTATUS_APPLICATION()){
             String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
             imgeview_main_activate.setImageDrawable(res);
             textview_main_activate.setText("Activated");
-            Singleton.getInstance().setSTATUS_APPLICATION(false);
             Toast.makeText(getApplicationContext(),"The service is now turned ON.", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
+            int imageResource = getResources().getIdentifier(uri, null, getPackageName());
+            Drawable res = getResources().getDrawable(imageResource);
+            imgeview_main_activate.setImageDrawable(res);
+            textview_main_activate.setText("Deactivated");
+            Toast.makeText(getApplicationContext(),"The service is now turned OFF.", Toast.LENGTH_SHORT).show();
         }
     }
 
