@@ -1,6 +1,20 @@
 package com.alioptak.spamcallblock;
 
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Singleton {
 
@@ -23,7 +37,9 @@ public class Singleton {
     private ArrayList<Contact> contacts;
     private ArrayList<String> blockedNumbers;
     private ArrayList<Contact> blockedContacts;
+    private ArrayList<String> database_blocked = new ArrayList<String>();
     private ArrayList<Call> history_calls= new ArrayList<>();
+    private DatabaseReference mDatabase;
 
     /** CONTACTS **/
     public void block(Contact c){
@@ -159,20 +175,7 @@ public class Singleton {
         }
         this.blockedNumbers = new1;
         this.blockedContacts = new2;
-        /*for (Contact contact: blockedContacts) {
-            if(contact.getPhone_number().contentEquals(phoneNumber)){
-                blockedContacts.remove(contact);
-                break;
-            }
-        }
 
-        for(String blocked_number : blockedNumbers){
-            if(blocked_number.equalsIgnoreCase(phoneNumber)){
-                status = true;
-                this.blockedNumbers.remove(blocked_number);
-                break;
-            }
-        }*/
         return status;
     }
 
@@ -186,5 +189,25 @@ public class Singleton {
 
     public void setSTATUS_APPLICATION(boolean STATUS_APPLICATION) {
         this.STATUS_APPLICATION = STATUS_APPLICATION;
+    }
+
+    public void fetchFromDatabase(){
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("blocked_numbers").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    task.getResult().getChildren().forEach(t -> {
+                        Log.d("Singleton", ">>" + t.getKey());
+                        if(t != null) database_blocked.add(t.getKey());
+                    });
+                }
+            }
+        });
+    }
+
+    public boolean isNumberInDatabase(String num){
+        return database_blocked.indexOf(num) != -1;
     }
 }

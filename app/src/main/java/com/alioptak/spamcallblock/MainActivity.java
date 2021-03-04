@@ -68,14 +68,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         Singleton.getInstance().setListNumberBlocked(StorageManager.readFileAsString(this));
         StorageManager.writeStringAsFile(this,new ArrayList<String>());
 
         setContentView(R.layout.activity_main);
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseDatabase.getInstance().goOnline();
+        Singleton.getInstance().fetchFromDatabase();
 
         askPermission( permission.READ_CONTACTS, 10);
 
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
             imgeview_main_activate.setImageDrawable(res);
-            textview_main_activate.setText("Desactivated.");
+            textview_main_activate.setText("Deactivated");
             Singleton.getInstance().setSTATUS_APPLICATION(true);
             Toast.makeText(getApplicationContext(),"The service is now turn OFF.", Toast.LENGTH_SHORT).show();
         }
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
             imgeview_main_activate.setImageDrawable(res);
-            textview_main_activate.setText("Activated.");
+            textview_main_activate.setText("Activated");
             Singleton.getInstance().setSTATUS_APPLICATION(false);
             Toast.makeText(getApplicationContext(),"The service is now turn ON.", Toast.LENGTH_SHORT).show();
         }

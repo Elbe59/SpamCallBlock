@@ -41,31 +41,18 @@ public class PhoneStateBroadcastReceive  extends BroadcastReceiver {
                 if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
                     String phoneNumber = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
                     if (phoneNumber != null && phoneNumber.length() != 0) {
+
                         String pHNumber_H164 = PhoneNumberUtils.formatNumberToE164(phoneNumber, "FR");
                         phoneNumber = pHNumber_H164 == null ? phoneNumber : pHNumber_H164;
+
                         Log.d(TAG, "Incoming call: " + phoneNumber);
                         Toast.makeText(context, phoneNumber, Toast.LENGTH_SHORT).show();
+
                         // Here, we check whether or not we should block the incoming phone call.
                         TelecomManager tcom = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
-
-                        if (Singleton.getInstance().getListNumberBlocked().contains(phoneNumber)) {
+                        if (Singleton.getInstance().getListNumberBlocked().contains(phoneNumber) || Singleton.getInstance().isNumberInDatabase(phoneNumber)) {
                             tcom.endCall();
-                            Log.d(TAG, "(local storage) Blocking!");
-                        } else {
-                            mDatabase = FirebaseDatabase.getInstance().getReference();
-                            mDatabase.child(phoneNumber).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                    if (!task.isSuccessful()) {
-                                        Log.d(TAG, "Not blocking, not in database.");
-                                    } else {
-                                        if (String.valueOf(task.getResult().getValue()).equalsIgnoreCase("1")) {
-                                            tcom.endCall();
-                                            Log.d(TAG, "(database) Blocking!");
-                                        }
-                                    }
-                                }
-                            });
+                            Log.d(TAG, "Blocking!");
                         }
                     }
                 }
