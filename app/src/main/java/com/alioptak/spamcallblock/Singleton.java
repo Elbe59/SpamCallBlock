@@ -1,11 +1,14 @@
 package com.alioptak.spamcallblock;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.alioptak.spamcallblock.activities.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -188,17 +191,29 @@ public class Singleton {
         this.STATUS_APPLICATION = STATUS_APPLICATION;
     }
 
-    public void fetchFromDatabase(){
+    public void fetchFromDatabase(Context c, boolean showToasts){
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        Toast toast_db = Toast.makeText(c,"Trying to connect to the database...", Toast.LENGTH_SHORT);
+        if(showToasts) toast_db.show();
+
         mDatabase.child("blocked_numbers").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
+
+                toast_db.cancel();
+
                 if(task.isSuccessful()){
                     task.getResult().getChildren().forEach(t -> {
                         if(t != null) database_blocked.add(t.getKey());
                     });
+                    toast_db.setText("Database synced.");
+                }else{
+                    toast_db.setText("Error: Couldn't connect to the database.\nPlease restart the app and check your internet connexion.");
                 }
+
+                if(showToasts) toast_db.show();
             }
         });
     }

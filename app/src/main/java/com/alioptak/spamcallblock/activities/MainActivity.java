@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
     private final String ORDER = String.format("%1$s COLLATE NOCASE", DISPLAY_NAME);
 
+    private Toast service;
+
+
     @SuppressLint("InlinedApi")
     private final String[] PROJECTION = {
             ContactsContract.Contacts._ID,
@@ -61,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
 
         Singleton.getInstance().setListNumberBlocked(StorageManager.readFileAsString(this));
@@ -69,13 +71,15 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+
         try{
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         }catch (Exception e){
             Log.e(TAG, e.getMessage());
         }
+
         FirebaseDatabase.getInstance().goOnline();
-        Singleton.getInstance().fetchFromDatabase();
+        Singleton.getInstance().fetchFromDatabase(this, false);
 
         askPermission( permission.READ_CONTACTS, 10);
 
@@ -95,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         imgeview_main_activate = (ImageView) findViewById(R.id.imgeview_main_activate);
         textview_main_activate = (TextView) findViewById(R.id.textview_main_activate);
         Log.d(TAG, ">>>>>" + Singleton.getInstance().getSTATUS_APPLICATION());
@@ -105,12 +108,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if( askPermission( permission.ANSWER_PHONE_CALLS, 9) && askPermission( permission.READ_PHONE_STATE, 11) && askPermission( permission.READ_EXTERNAL_STORAGE, 12) && askPermission( permission.WRITE_EXTERNAL_STORAGE, 13)) {
-                    Singleton.getInstance().setSTATUS_APPLICATION(!Singleton.getInstance().getSTATUS_APPLICATION());
+                    boolean STATUS_APP = Singleton.getInstance().getSTATUS_APPLICATION();
+                    Singleton.getInstance().setSTATUS_APPLICATION(!STATUS_APP);
+                    String toast_text = STATUS_APP ? "The service is OFF." : "The service is ON.";
+                    try{
+                        service.cancel();
+                    }catch (Exception e){
+                        Log.d(TAG, "Couldn't cancel toast. Null.");
+                    }
+                    service = Toast.makeText(getApplicationContext(),toast_text, Toast.LENGTH_SHORT);
+                    service.show();
                     setImageStatusApplication();
                 }
             }
         });
 
+        ImageView refresh = (ImageView) findViewById(R.id.button_main_refresh);
+        refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseDatabase.getInstance().goOnline();
+                Singleton.getInstance().fetchFromDatabase(MainActivity.this, true);
+
+            }
+        });
 
     }
 
@@ -125,14 +146,24 @@ public class MainActivity extends AppCompatActivity {
         if(Singleton.getInstance().getSTATUS_APPLICATION()) createNotification();
     }
 
+    @Override
+    protected void onDestroy() {
+        try{
+            deleteNotification();
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+        super.onDestroy();
+    }
+
     private void setImageStatusApplication(){
+
         if(Singleton.getInstance().getSTATUS_APPLICATION()){
             String uri = "@drawable/desactive_icon";  // where myresource (without the extension) is the file
             int imageResource = getResources().getIdentifier(uri, null, getPackageName());
             Drawable res = getResources().getDrawable(imageResource);
             imgeview_main_activate.setImageDrawable(res);
             textview_main_activate.setText("Activated");
-            Toast.makeText(getApplicationContext(),"The service is now turned ON.", Toast.LENGTH_SHORT).show();
         }
         else{
             String uri = "@drawable/active_icon";  // where myresource (without the extension) is the file
@@ -140,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             Drawable res = getResources().getDrawable(imageResource);
             imgeview_main_activate.setImageDrawable(res);
             textview_main_activate.setText("Deactivated");
-            Toast.makeText(getApplicationContext(),"The service is now turned OFF.", Toast.LENGTH_SHORT).show();
             try{
                 deleteNotification();
             }catch (Exception e){

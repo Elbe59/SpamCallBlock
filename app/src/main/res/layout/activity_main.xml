@@ -24,6 +24,17 @@
                 android:textSize="30dp"
                 android:layout_weight="0.6"
                 android:gravity="center"/>
+
+            <ImageView
+                android:id="@+id/button_main_refresh"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center|left"
+                android:layout_marginRight="5dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:src="@drawable/refresh" />
+
         </LinearLayout>
         <ListView
             android:id="@+id/list_view_main"
@@ -71,7 +82,9 @@
             android:src="@drawable/active_icon"
             android:layout_height="300dp"
             android:layout_width="300dp"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            />
+
 
     </LinearLayout>
 
